@@ -23,7 +23,7 @@ abstract class JobRepositoryContract : ShouldSpec() {
     protected abstract fun randomJobId(): String
 
     protected var now = now()
-    protected val clock = MutableClock(Clock.fixed(now, ZoneId.systemDefault()))
+    protected val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
 
     protected abstract val testee: JobRepository
 

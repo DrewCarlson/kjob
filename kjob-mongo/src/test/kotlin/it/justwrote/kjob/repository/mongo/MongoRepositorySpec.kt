@@ -19,7 +19,7 @@ class MongoRepositorySpec : ShouldSpec() {
 
     private val databaseName = "test-" + UUID.randomUUID()
 
-    private var clock = Clock.fixed(Instant.parse("2020-02-22T22:22:22.222Z"), ZoneId.systemDefault())
+    private var clock = Clock.fixed(Instant.parse("2020-02-22T22:22:22.222Z"), ZoneId.of("UTC"))
 
     private fun create(value: Int): Counter =
             Counter(ObjectId.get().toHexString(), value, now(clock))
@@ -83,7 +83,7 @@ class MongoRepositorySpec : ShouldSpec() {
             val r = testee.createOrUpdate(counter3)
             r shouldBe counter3
 
-            clock = Clock.fixed(now(), ZoneId.systemDefault())
+            clock = Clock.fixed(now(), ZoneId.of("UTC"))
 
             val updatedCounter = counter3.copy(value = -10, updatedAt = now(clock))
             val r2 = testee.createOrUpdate(updatedCounter)

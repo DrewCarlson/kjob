@@ -207,7 +207,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
 
         should("delay a job if runAt is specified") {
             val now = Instant.parse("2020-11-01T10:00:00.222222Z")
-            val clock = MutableClock(Clock.fixed(now, ZoneId.systemDefault()))
+            val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
             val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
@@ -238,7 +238,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
 
         should("run a job immediately if runAt is in the past") {
             val now = Instant.parse("2020-11-01T10:00:00.222222Z")
-            val clock = MutableClock(Clock.fixed(now, ZoneId.systemDefault()))
+            val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
             val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
@@ -265,7 +265,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
 
         should("not run a delayed task if this kjob instance does not own the job anymore") {
             val now = Instant.parse("2020-11-01T10:00:00.222222Z")
-            val clock = MutableClock(Clock.fixed(now, ZoneId.systemDefault()))
+            val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
             val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()

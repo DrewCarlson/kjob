@@ -53,7 +53,7 @@ class CronSchedulerSpec : ShouldSpec() {
     init {
 
         val now = Instant.parse("2020-11-01T10:00:00.222222Z")
-        fun newClock() = MutableClock(Clock.fixed(now, ZoneId.systemDefault()))
+        fun newClock() = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
 
         should("schedule the 'EverySecond' job every second once") {
             val clock = newClock()

@@ -12,7 +12,7 @@ abstract class LockRepositoryContract : ShouldSpec() {
     protected fun id(): UUID = UUID.randomUUID()
 
     protected var now = now()
-    protected val clock = MutableClock(Clock.fixed(now, ZoneId.systemDefault()))
+    protected val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
 
     protected abstract val testee: LockRepository
 

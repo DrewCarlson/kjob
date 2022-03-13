@@ -178,7 +178,7 @@ class BaseKJobSpec : ShouldSpec() {
 
         should("execute a delayed job as expected") {
             val now = Instant.parse("2020-11-01T10:00:00.222222Z")
-            val clock = MutableClock(Clock.fixed(now, ZoneId.systemDefault()))
+            val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
             val settings1 = js("my-test-id-1")
             val settings2 = js("my-test-id-2")
             val sj1 = sj(settings = settings1)
