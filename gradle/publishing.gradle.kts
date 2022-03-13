@@ -50,7 +50,7 @@ val repositoryId by lazy {
             )
             connect()
             getInputStream()
-                .readAllBytes()
+                .readBytes()
                 .decodeToString()
                 .substringAfter("<stagedRepositoryId>")
                 .substringBefore("</stagedRepositoryId>")
