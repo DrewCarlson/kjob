@@ -5,7 +5,6 @@ import it.justwrote.kjob.job.JobSettings
 import it.justwrote.kjob.job.JobStatus
 import it.justwrote.kjob.job.ScheduledJob
 import it.justwrote.kjob.repository.JobRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
@@ -119,7 +118,6 @@ internal class InMemJobRepository(private val clock: Clock) : JobRepository {
         }
     }
 
-    @ExperimentalCoroutinesApi
     override suspend fun findNext(names: Set<String>, status: Set<JobStatus>, limit: Int): Flow<ScheduledJob> {
         val filter1: (ScheduledJob) -> Boolean = { if (names.isEmpty()) true else names.contains(it.settings.name) }
         val filter2: (ScheduledJob) -> Boolean = { status.contains(it.status) }

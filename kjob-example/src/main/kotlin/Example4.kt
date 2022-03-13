@@ -4,7 +4,7 @@ import it.justwrote.kjob.kjob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlin.time.ExperimentalTime
-import kotlin.time.seconds
+import kotlin.time.Duration.Companion.seconds
 
 object MyFirstDelayedJob : Job("my-first-delayed-job") {
     val index = integer("index")

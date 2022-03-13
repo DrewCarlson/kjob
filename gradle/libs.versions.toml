@@ -1,0 +1,54 @@
+[versions]
+kotlin = "1.6.10"
+coroutines = "1.6.0"
+serialization = "1.3.2"
+kover = "0.5.0"
+datetime = "0.3.2"
+
+jdbi = "3.28.0"
+jdbc_sqlite = "3.36.0.3"
+
+logback = "1.2.11"
+spotless = "6.3.0"
+ktlint = "0.43.2"
+
+testLogger = "3.2.0"
+mockk = "1.12.3"
+kotest = "5.1.0"
+cronutils = "9.1.6"
+
+[plugins]
+jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }
+
+[libraries]
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "coroutines" }
+coroutines-reactive = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactive", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
+serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+
+jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+jdbi-sqlite = { module = "org.jdbi:jdbi3-sqlite", version.ref = "jdbi" }
+jdbi-sqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
+jdbi-kotlin = { module = "org.jdbi:jdbi3-kotlin", version.ref = "jdbi" }
+jdbi-kotlin-sqlobject = { module = "org.jdbi:jdbi3-kotlin-sqlobject", version.ref = "jdbi" }
+jdbc-sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "jdbc_sqlite" }
+
+slf4j = { module = "org.slf4j:slf4j-api", version = "1.7.36" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+cronutils = { module = "com.cronutils:cron-utils", version.ref = "cronutils" }
+embedMongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo", version = "3.4.3" }
+mongodbReactive = { module = "org.mongodb:mongodb-driver-reactivestreams", version = "4.5.0" }
+rxjava = { module = "io.reactivex.rxjava2:rxkotlin", version = "2.4.0" }
