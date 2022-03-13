@@ -46,7 +46,7 @@ subprojects {
 
     val testJar = tasks.create<Jar>("testJar") {
         archiveClassifier.set("test")
-        from(sourceSets.test.get())
+        from(sourceSets.test.get().output)
     }
 
     configurations {
