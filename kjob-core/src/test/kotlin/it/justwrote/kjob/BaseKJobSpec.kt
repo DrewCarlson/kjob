@@ -27,13 +27,11 @@ import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
 import java.util.concurrent.CountDownLatch
-import kotlin.time.ExperimentalTime
-import kotlin.time.minutes
+import kotlin.time.Duration.Companion.minutes
 
-@ExperimentalTime
 class BaseKJobSpec : ShouldSpec() {
 
-    override fun isolationMode(): IsolationMode? {
+    override fun isolationMode(): IsolationMode {
         return IsolationMode.InstancePerTest
     }
 

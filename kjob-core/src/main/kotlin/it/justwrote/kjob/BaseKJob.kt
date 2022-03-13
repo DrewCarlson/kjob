@@ -17,7 +17,6 @@ import java.time.Clock
 import java.time.Instant
 import java.util.*
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.toJavaDuration
 
 abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : KJob {
@@ -68,7 +67,7 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
         fun <Ex : Extension, ExConfig : Extension.Configuration, Kj : KJob, KjConfig : Configuration> KjConfig.extension(
                 module: ExtensionModule<Ex, ExConfig, Kj, KjConfig>,
                 configure: ExConfig.() -> Unit = {}
-        ): Unit {
+        ) {
             val fn = module.create(configure, this)
             extensions[module.id] = fn as (KJob) -> Extension
         }
@@ -157,7 +156,6 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
         return this
     }
 
-    @ExperimentalTime
     override suspend fun <J : Job> schedule(job: J, delay: Duration, block: ScheduleContext<J>.(J) -> Unit): KJob {
         val ctx = ScheduleContext<J>()
         block(ctx, job)

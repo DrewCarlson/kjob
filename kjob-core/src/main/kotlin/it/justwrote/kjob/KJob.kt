@@ -7,7 +7,6 @@ import it.justwrote.kjob.extension.Extension
 import it.justwrote.kjob.extension.ExtensionId
 import it.justwrote.kjob.job.JobExecutionType
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 interface KJob {
     open class Configuration {
@@ -68,7 +67,6 @@ interface KJob {
      * @param job the job that has been registered before
      * @param delay time to wait until the job will be scheduled
      */
-    @ExperimentalTime
     suspend fun <J : Job> schedule(job: J, delay: Duration, block: ScheduleContext<J>.(J) -> Unit = {}): KJob
 
     operator fun <Ex: Extension, ExId: ExtensionId<Ex>> invoke(extensionId: ExId): Ex
