@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.testLogger)
+    alias(libs.plugins.dokka)
 }
 
 allprojects {
@@ -13,6 +14,7 @@ allprojects {
 subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "com.adarshr.test-logger")
+    apply(from = "../gradle/publishing.gradle.kts")
 
     kotlin {
         target {

@@ -4,6 +4,8 @@ coroutines = "1.6.0"
 serialization = "1.3.2"
 kover = "0.5.0"
 datetime = "0.3.2"
+dokka = "1.6.10"
+binary_compat = "0.8.0"
 
 jdbi = "3.28.0"
 jdbc_sqlite = "3.36.0.3"
@@ -19,6 +21,8 @@ cronutils = "9.1.6"
 
 [plugins]
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+binaryCompat = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary_compat" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
