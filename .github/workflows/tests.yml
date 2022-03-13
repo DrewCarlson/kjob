@@ -11,7 +11,7 @@ jobs:
         java: [8, 12]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Gradle
         uses: actions/cache@v2
         with:
