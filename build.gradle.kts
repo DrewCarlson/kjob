@@ -14,7 +14,6 @@ allprojects {
 subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "com.adarshr.test-logger")
-    apply(from = "../gradle/publishing.gradle.kts")
 
     kotlin {
         target {
@@ -75,6 +74,7 @@ project(":kjob-example") {
 }
 
 project(":kjob-mongo") {
+    apply(from = "../gradle/publishing.gradle.kts")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.mongodbReactive)
@@ -92,6 +92,7 @@ project(":kjob-mongo") {
 }
 
 project(":kjob-inmem") {
+    apply(from = "../gradle/publishing.gradle.kts")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.coroutines.core)
@@ -106,6 +107,7 @@ project(":kjob-inmem") {
 }
 
 project(":kjob-kron") {
+    apply(from = "../gradle/publishing.gradle.kts")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.coroutines.core)
@@ -125,6 +127,7 @@ project(":kjob-kron") {
 }
 
 project(":kjob-core") {
+    apply(from = "../gradle/publishing.gradle.kts")
     dependencies {
         implementation(rootProject.libs.coroutines.core)
         api(rootProject.libs.slf4j)
