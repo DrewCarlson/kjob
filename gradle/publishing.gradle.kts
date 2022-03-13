@@ -1,3 +1,6 @@
+import java.net.URL
+import java.util.Base64
+
 apply(plugin = "maven-publish")
 apply(plugin = "signing")
 apply(plugin = "org.jetbrains.dokka")
@@ -14,6 +17,7 @@ val signingKey: String? by project
 val signingPassword: String? by project
 val sonatypeUsername: String? by project
 val sonatypePassword: String? by project
+val sonatypeStagingProfile: String? by project
 val pomProjectUrl: String by project
 val pomProjectDescription: String by project
 val pomScmUrl: String by project
@@ -25,6 +29,34 @@ val pomLicenseDistribution: String by project
 
 task<Jar>("javadocJar") {
     archiveClassifier.set("javadoc")
+}
+
+val repositoryId by lazy {
+    if (!rootProject.extra.has("publishRepositoryId")) {
+        val id = URL("${mavenUrl}profiles/$sonatypeStagingProfile/start").openConnection().run {
+            doOutput = true
+            val auth = Base64.getEncoder().encode("$sonatypeUsername:$sonatypePassword".toByteArray())
+            setRequestProperty("Authorization", "Basic ${auth.decodeToString()}")
+            setRequestProperty("Content-Type", "application/xml")
+            getOutputStream().write(
+                """
+                <promoteRequest>
+                    <data>
+                        <description>Repository for ${version}</description>
+                    </data>
+                </promoteRequest>
+                """.trimIndent().toByteArray()
+            )
+            connect()
+            getInputStream()
+                .readAllBytes()
+                .decodeToString()
+                .substringAfter("<stagedRepositoryId>")
+                .substringBefore("</stagedRepositoryId>")
+        }
+        rootProject.extra.set("publishRepositoryId", id)
+    }
+    rootProject.extra.get("publishRepositoryId")
 }
 
 configure<PublishingExtension> {
@@ -66,7 +98,7 @@ configure<PublishingExtension> {
     repositories {
         maven {
             url = if (version.toString().endsWith("SNAPSHOT")) {
-                uri(mavenSnapshotUrl)
+                uri("${mavenSnapshotUrl}deployByRepositoryId/$repositoryId")
             } else {
                 uri(mavenUrl)
             }
