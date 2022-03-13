@@ -61,7 +61,7 @@ class SimplePeriodSchedulerSpec : ShouldSpec() {
             val testee = newTestee(flaky, newScheduler())
 
             testee.start()
-            Thread.sleep(50)
+            Thread.sleep(200)
             testee.shutdown()
             flaky.successLatch = CountDownLatch(1)
             flaky.successLatch.waitSomeTime(500) shouldBe false
