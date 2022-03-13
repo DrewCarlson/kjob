@@ -19,6 +19,8 @@ A coroutine based persistent background (cron) scheduler written in Kotlin.
 
 ## Installation
 
+![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/org.drewcarlson/kjob-core?server=https%3A%2F%2Fs01.oss.sonatype.org)
+
 Just add the following lines to your `build.gradle`. For `<version>` see the button above or [releases/latest](https://github.com/DrewCarlson/kjob/releases/latest) for the current version number.
 
 ```kotlin
