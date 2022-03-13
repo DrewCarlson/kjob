@@ -40,7 +40,7 @@ abstract class LockRepositoryContract : ShouldSpec() {
             r1.id shouldBe id
             r1.updatedAt shouldBe now
 
-            val now2 = now()
+            val now2 = now().plusNanos(1)
             clock.update(now2)
             val r2 = testee.ping(id)
 

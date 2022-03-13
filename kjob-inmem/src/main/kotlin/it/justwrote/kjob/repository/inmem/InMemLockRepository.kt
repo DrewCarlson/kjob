@@ -16,9 +16,9 @@ internal class InMemLockRepository(private val conf: InMemKJob.Configuration, pr
     private val map = ConcurrentHashMap<UUID, Lock>()
 
     override suspend fun ping(id: UUID): Lock {
-        val lock = Lock(id, Instant.now(clock))
-        map[id] = lock
-        return lock
+        return checkNotNull(map.compute(id) { _, _ ->
+            Lock(id, Instant.now(clock))
+        })
     }
 
     override suspend fun exists(id: UUID): Boolean {
@@ -26,7 +26,7 @@ internal class InMemLockRepository(private val conf: InMemKJob.Configuration, pr
         return lock == null || lock.updatedAt.plusSeconds(conf.expireLockInMinutes * 60).isAfter(Instant.now(clock))
     }
 
-    internal fun deleteAll(): Unit {
+    internal fun deleteAll() {
         map.clear()
     }
 }
