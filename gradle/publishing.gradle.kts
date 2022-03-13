@@ -32,6 +32,7 @@ task<Jar>("javadocJar") {
 }
 
 val repositoryId by lazy {
+    if (!gradle.startParameter.taskNames.contains("publish")) return@lazy ""
     if (!rootProject.extra.has("publishRepositoryId")) {
         val id = URL("${mavenUrl}profiles/$sonatypeStagingProfile/start").openConnection().run {
             doOutput = true
