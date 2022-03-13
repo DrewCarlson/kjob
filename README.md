@@ -172,9 +172,9 @@ To see a more advanced version take a look at this [example](https://github.com/
 
 With kjob you are also able to schedule jobs with the familiar cron expression. To get Kron - the name of the extension to enable Cron scheduling in kjob - you need to add the following dependency:
 
-```groovy
+```kotlin
 dependencies {
-  implementation "it.justwrote:kjob-kron:<version>"
+  implementation("org.drewcarlson:kjob-kron:<version>")
 }
 ``` 
 
