@@ -64,7 +64,7 @@ class SimplePeriodSchedulerSpec : ShouldSpec() {
             Thread.sleep(50)
             testee.shutdown()
             flaky.successLatch = CountDownLatch(1)
-            flaky.successLatch.waitSomeTime(50) shouldBe false
+            flaky.successLatch.waitSomeTime(500) shouldBe false
         }
     }
 }
