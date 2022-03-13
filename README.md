@@ -24,7 +24,7 @@ Just add the following lines to your `build.gradle`. For `<version>` see the but
 
 ```groovy
 repositories {
-  jcenter()
+    mavenCentral()
 }
 
 dependencies {

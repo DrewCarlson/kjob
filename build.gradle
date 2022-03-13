@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     repositories {
-        jcenter()
+        mavenCentral()
     }
     group = "it.justwrote"
 }
