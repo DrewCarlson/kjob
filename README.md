@@ -1,7 +1,7 @@
 # kjob
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.drewcarlson/kjob-core?label=maven&color=blue)](https://search.maven.org/search?q=g:org.drewcarlson%20a:kjob-*)
-[![GitHub Build Status](https://img.shields.io/github/workflow/status/DrewCarlson/kjob/Tests/master?style=flat)](https://github.com/DrewCarlson/kjob/actions?query=workflow%3ATests)
+[![GitHub Build Status](https://img.shields.io/github/workflow/status/DrewCarlson/kjob/Tests/main?style=flat)](https://github.com/DrewCarlson/kjob/actions?query=workflow%3ATests)
 
 A coroutine based persistent background (cron) scheduler written in Kotlin.
 
@@ -78,7 +78,7 @@ kjob.schedule(OrderCreatedEmail, 5.seconds) {
 // this runs the job not immediately but - you may guess it already - in 5 seconds!
 ```
 
-For more details please take a look at the [examples](https://github.com/DrewCarlson/kjob/blob/master/kjob-example/src/main/kotlin)
+For more details please take a look at the [examples](https://github.com/DrewCarlson/kjob/blob/main/kjob-example/src/main/kotlin)
 
 ## Starting kjob
 
@@ -166,7 +166,7 @@ val kjob = kjob(InMem) {
 kjob(ShowIdExtension).showId() // access our new extension method
 ```
 
-To see a more advanced version take a look at this [example](https://github.com/DrewCarlson/kjob/blob/master/kjob-example/src/main/kotlin/Example_Extension.kt)
+To see a more advanced version take a look at this [example](https://github.com/DrewCarlson/kjob/blob/main/kjob-example/src/main/kotlin/Example_Extension.kt)
 
 ## Cron
 
@@ -201,7 +201,7 @@ kjob(Kron).kron(PrintStuff) {
 }
 ```
 
-You can find more in this [example](https://github.com/DrewCarlson/kjob/blob/master/kjob-example/src/main/kotlin/Example_Kron.kt)
+You can find more in this [example](https://github.com/DrewCarlson/kjob/blob/main/kjob-example/src/main/kotlin/Example_Kron.kt)
 
 
 ## Roadmap
@@ -216,4 +216,4 @@ consider one of them important please open an issue.
 
 ## License
 
-kjob is licensed under the [Apache 2.0 License](https://github.com/DrewCarlson/kjob/blob/master/LICENSE).
+kjob is licensed under the [Apache 2.0 License](https://github.com/DrewCarlson/kjob/blob/main/LICENSE).
