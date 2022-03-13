@@ -24,11 +24,10 @@ class MongoLockRepositorySpec : LockRepositoryContract() {
         mongoTestee.deleteAll()
     }
 
-    override fun beforeSpec(spec: Spec) {
-        runBlocking { mongoTestee.ensureIndexes() }
-    }
-
     init {
+        beforeSpec {
+            runBlocking { mongoTestee.ensureIndexes() }
+        }
         should("return applied ttl") {
             val ttlIndex = mongoClient
                     .getDatabase(mongoTestee.conf.databaseName)

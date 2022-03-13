@@ -1,6 +1,5 @@
 package it.justwrote.kjob.repository.mongo
 
-import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.provided.ProjectConfig
 import it.justwrote.kjob.repository.JobRepository
@@ -31,11 +30,11 @@ class MongoJobRepositorySpec : JobRepositoryContract() {
 
     override fun randomJobId(): String = ObjectId.get().toHexString()
 
-    override fun beforeSpec(spec: Spec) {
-        runBlocking { mongoTestee.ensureIndexes() }
-    }
-
     init {
+        beforeSpec {
+            runBlocking { mongoTestee.ensureIndexes() }
+        }
+
         should("ensure index") {
             val unique = mongoClient
                     .getDatabase(mongoTestee.conf.databaseName)

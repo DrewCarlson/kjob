@@ -42,12 +42,11 @@ class MongoRepositorySpec : ShouldSpec() {
         override fun keyOf(value: Counter): String = value.id
     }
 
-    override fun afterSpec(spec: Spec) {
-        super.afterSpec(spec)
-        runBlocking { testee.deleteAll() }
-    }
-
     init {
+        afterSpec {
+            runBlocking { testee.deleteAll() }
+        }
+
         val counter1 = create(10)
         val counter2 = create(20)
         val counter3 = create(30)
