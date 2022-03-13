@@ -16,7 +16,7 @@ jobs:
   gradle:
     strategy:
       matrix:
-        os: [ macos-latest ]
+        os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
