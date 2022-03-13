@@ -231,7 +231,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
 
             clock.update(now.plusSeconds(10))
 
-            coVerify(timeout = 50) { runnableJobMock.execute(any()) }
+            coVerify(timeout = 100) { runnableJobMock.execute(any()) }
             coVerify(timeout = 50) { jobRepositoryMock.update("internal-job-id", kjobId, kjobId, RUNNING, null, 0) }
             coVerify(timeout = 50) { jobRepositoryMock.update("internal-job-id", kjobId, null, COMPLETE, null, 1) }
         }
