@@ -1,8 +1,7 @@
 # kjob
 
-[![Bintray](https://img.shields.io/badge/dynamic/json.svg?label=latest%20release&url=https%3A%2F%2Fapi.bintray.com%2F%2Fpackages%2Fjustwrote%2Fmaven%2Fkjob-core%2Fversions%2F_latest&query=name&colorB=328998&style=flat)](https://bintray.com/justwrote/maven/kjob-core)
-[![GitHub Build Status](https://img.shields.io/github/workflow/status/justwrote/kjob/CI/master?style=flat)](https://github.com/justwrote/kjob/actions?query=workflow%3ACI)
-[![Coverage Status](https://coveralls.io/repos/github/justwrote/kjob/badge.svg)](https://coveralls.io/github/justwrote/kjob)
+[![Maven Central](https://img.shields.io/maven-central/v/org.drewcarlson/kjob-core?label=maven&color=blue)](https://search.maven.org/search?q=g:org.drewcarlson%20a:kjob-*)
+[![GitHub Build Status](https://img.shields.io/github/workflow/status/DrewCarlson/kjob/Tests/master?style=flat)](https://github.com/DrewCarlson/kjob/actions?query=workflow%3ATests)
 
 A coroutine based persistent background (cron) scheduler written in Kotlin.
 
@@ -20,17 +19,17 @@ A coroutine based persistent background (cron) scheduler written in Kotlin.
 
 ## Installation
 
-Just add the following lines to your `build.gradle`. For `<version>` see the button above or [releases/latest](https://github.com/justwrote/kjob/releases/latest) for the current version number.
+Just add the following lines to your `build.gradle`. For `<version>` see the button above or [releases/latest](https://github.com/DrewCarlson/kjob/releases/latest) for the current version number.
 
-```groovy
+```kotlin
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-  implementation "it.justwrote:kjob-core:<version>"
-  implementation "it.justwrote:kjob-mongo:<version>" // for mongoDB persistence
-  testImplementation "it.justwrote:kjob-inmem:<version>" // for in-memory 'persistence' (e.g. tests)
+  implementation("org.drewcarlson:kjob-core:<version>")
+  implementation("org.drewcarlson:kjob-mongo:<version>") // for mongoDB persistence
+  testImplementation("org.drewcarlson:kjob-inmem:<version>") // for in-memory 'persistence' (e.g. tests)
 }
 ```
 
@@ -77,7 +76,7 @@ kjob.schedule(OrderCreatedEmail, 5.seconds) {
 // this runs the job not immediately but - you may guess it already - in 5 seconds!
 ```
 
-For more details please take a look at the [examples](https://github.com/justwrote/kjob/blob/master/kjob-example/src/main/kotlin)
+For more details please take a look at the [examples](https://github.com/DrewCarlson/kjob/blob/master/kjob-example/src/main/kotlin)
 
 ## Starting kjob
 
@@ -165,7 +164,7 @@ val kjob = kjob(InMem) {
 kjob(ShowIdExtension).showId() // access our new extension method
 ```
 
-To see a more advanced version take a look at this [example](https://github.com/justwrote/kjob/blob/master/kjob-example/src/main/kotlin/Example_Extension.kt)
+To see a more advanced version take a look at this [example](https://github.com/DrewCarlson/kjob/blob/master/kjob-example/src/main/kotlin/Example_Extension.kt)
 
 ## Cron
 
@@ -200,7 +199,7 @@ kjob(Kron).kron(PrintStuff) {
 }
 ```
 
-You can find more in this [example](https://github.com/justwrote/kjob/blob/master/kjob-example/src/main/kotlin/Example_Kron.kt)
+You can find more in this [example](https://github.com/DrewCarlson/kjob/blob/master/kjob-example/src/main/kotlin/Example_Kron.kt)
 
 
 ## Roadmap
@@ -215,4 +214,4 @@ consider one of them important please open an issue.
 
 ## License
 
-kjob is licensed under the [Apache 2.0 License](https://github.com/justwrote/kjob/blob/master/LICENSE).
+kjob is licensed under the [Apache 2.0 License](https://github.com/DrewCarlson/kjob/blob/master/LICENSE).
