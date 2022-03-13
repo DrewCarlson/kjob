@@ -98,9 +98,9 @@ configure<PublishingExtension> {
     repositories {
         maven {
             url = if (version.toString().endsWith("SNAPSHOT")) {
-                uri("${mavenSnapshotUrl}deployByRepositoryId/$repositoryId")
+                uri(mavenSnapshotUrl)
             } else {
-                uri(mavenUrl)
+                uri("${mavenUrl}deployByRepositoryId/$repositoryId")
             }
             credentials {
                 username = sonatypeUsername
