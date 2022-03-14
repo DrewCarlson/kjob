@@ -5,6 +5,8 @@
 
 A coroutine based persistent background (cron) scheduler written in Kotlin.
 
+Forked from [justwrote/kjob](https://github.com/justwrote/kjob).
+
 ## Features
 
 * Persist scheduled jobs (e.g. mongoDB)
@@ -139,7 +141,11 @@ If you want to add new features to kjob you can do so with a kjob extension.
 ```kotlin
 object ShowIdExtension : ExtensionId<ShowIdEx>
 
-class ShowIdEx(private val config: Configuration, private val kjobConfig: BaseKJob.Configuration, private val kjob: BaseKJob<BaseKJob.Configuration>) : BaseExtension(ShowIdExtension) {
+class ShowIdEx(
+    private val config: Configuration,
+    private val kjobConfig: BaseKJob.Configuration,
+    private val kjob: BaseKJob<BaseKJob.Configuration>
+) : BaseExtension(ShowIdExtension) {
     class Configuration : BaseExtension.Configuration()
 
     fun showId() {
@@ -150,7 +156,10 @@ class ShowIdEx(private val config: Configuration, private val kjobConfig: BaseKJ
 
 object ShowIdModule : ExtensionModule<ShowIdEx, ShowIdEx.Configuration, BaseKJob<BaseKJob.Configuration>, BaseKJob.Configuration> {
     override val id: ExtensionId<ShowIdEx> = ShowIdExtension
-    override fun create(configure: ShowIdEx.Configuration.() -> Unit, kjobConfig: BaseKJob.Configuration): (BaseKJob<BaseKJob.Configuration>) -> ShowIdEx {
+    override fun create(
+        configure: ShowIdEx.Configuration.() -> Unit,
+        kjobConfig: BaseKJob.Configuration
+    ): (BaseKJob<BaseKJob.Configuration>) -> ShowIdEx {
         return { ShowIdEx(ShowIdEx.Configuration().apply(configure), kjobConfig, it) }
     }
 }
