@@ -173,7 +173,7 @@ abstract class JobRepositoryContract : ShouldSpec() {
             r2.updatedAt shouldBe now
         }
 
-        should("find next for varios names and/or status") {
+        should("find next for various names and/or status") {
             val kjobId = id()
             repeat(5) {
                 clock.update(now())

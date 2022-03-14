@@ -9,7 +9,7 @@ Forked from [justwrote/kjob](https://github.com/justwrote/kjob).
 
 ## Features
 
-* Persist scheduled jobs (e.g. mongoDB)
+* Persist scheduled jobs (SQL/JDBC, mongoDB)
 * [Cron](#cron) jobs 
 * Nice DSL for registering and scheduling jobs
 * Multiple instances possible
@@ -116,6 +116,25 @@ kjob(InMem) {
     cleanupPeriodInSeconds = 300 // the time between job clean ups
     cleanupSize = 50 // the amount of jobs that will be cleaned up per schedule
 }.start()
+```
+
+## JDBI (SQL) Configuration
+
+Using [JDBI](https://jdbi.org/), KJob can manage data inside of a SQL database.
+You only need to include the JDBC driver dependency and provide a connection string.
+
+Example Drivers: [SQLite](https://github.com/xerial/sqlite-jdbc), [MySQL](https://github.com/mysql/mysql-connector-j), [PostegreSQL](https://github.com/pgjdbc/pgjdbc)
+
+```kotlin
+import kjob.core.kjob
+kjob(JdbiKJob) {
+    connectionString = "jdbc:sqlite::memory:" // JDBC connection string
+    jdbi = null // Optional: Jdbi instance used in place of `connectionString`
+    handle = null // Optional: Handle used in place of `jdbi` and `connectionString`
+    jobTableName = "kjobJobs" // Optional: Table name for job data
+    lockTableName = "kjobLocks" // Optional: Table name for lock states
+    expireLockInMinutes = 5L // Optional: Expire a locks after this duration
+}
 ```
 
 ## MongoDB Configuration

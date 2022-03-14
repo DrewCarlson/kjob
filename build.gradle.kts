@@ -63,7 +63,9 @@ project(":kjob-example") {
         implementation(project(":kjob-kron"))
         implementation(project(":kjob-mongo"))
         implementation(project(":kjob-inmem"))
+        implementation(project(":kjob-jdbi"))
 
+        implementation(rootProject.libs.jdbc.sqlite)
         implementation(rootProject.libs.cronutils) {
             exclude(group = "org.slf4j", module = "slf4j-simple")
         }
@@ -84,6 +86,25 @@ project(":kjob-mongo") {
         testImplementation(rootProject.libs.kotest.runner)
         testImplementation(rootProject.libs.kotest.assertions)
         testImplementation(rootProject.libs.embedMongo)
+        testImplementation(rootProject.libs.mockk)
+        testImplementation(project(path = ":kjob-core", configuration = "testArtifacts"))
+
+        testRuntimeOnly(rootProject.libs.logback)
+    }
+}
+
+project(":kjob-jdbi") {
+    apply(from = "../gradle/publishing.gradle.kts")
+    dependencies {
+        implementation(project(":kjob-core"))
+        implementation(rootProject.libs.serialization.core)
+        implementation(rootProject.libs.serialization.json)
+        implementation(rootProject.libs.coroutines.core)
+        implementation(rootProject.libs.jdbi.core)
+
+        testImplementation(rootProject.libs.jdbc.sqlite)
+        testImplementation(rootProject.libs.kotest.runner)
+        testImplementation(rootProject.libs.kotest.assertions)
         testImplementation(rootProject.libs.mockk)
         testImplementation(project(path = ":kjob-core", configuration = "testArtifacts"))
 

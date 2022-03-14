@@ -5,6 +5,7 @@ include(
     "kjob-mongo",
     "kjob-inmem",
     "kjob-example",
+    "kjob-jdbi",
 )
 
 enableFeaturePreview("VERSION_CATALOGS")
