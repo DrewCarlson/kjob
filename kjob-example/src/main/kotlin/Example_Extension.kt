@@ -1,5 +1,13 @@
-import it.justwrote.kjob.*
-import it.justwrote.kjob.extension.*
+package example.ext
+
+import kjob.mongo.MongoKJob
+import kjob.core.BaseKJob
+import kjob.core.extension.BaseExtension
+import kjob.core.extension.ExtensionId
+import kjob.core.extension.ExtensionModule
+import kjob.core.kjob
+import kjob.inmem.InMem
+import kjob.inmem.InMemKJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -26,7 +34,8 @@ class MyGenericEx(private val config: Configuration, private val kjobConfig: Bas
     }
 }
 
-object MyGenericModule : ExtensionModule<MyGenericEx, MyGenericEx.Configuration, BaseKJob<BaseKJob.Configuration>, BaseKJob.Configuration> {
+object MyGenericModule :
+    ExtensionModule<MyGenericEx, MyGenericEx.Configuration, BaseKJob<BaseKJob.Configuration>, BaseKJob.Configuration> {
     override val id: ExtensionId<MyGenericEx> = MyGenericExtension
     override fun create(configure: MyGenericEx.Configuration.() -> Unit, kjobConfig: BaseKJob.Configuration): (BaseKJob<BaseKJob.Configuration>) -> MyGenericEx {
         return { MyGenericEx(MyGenericEx.Configuration().apply(configure), kjobConfig, it) }

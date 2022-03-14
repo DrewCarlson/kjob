@@ -38,10 +38,10 @@ dependencies {
 ## Using kjob
 
 ```kotlin
-import it.justwrote.kjob.Mongo
-import it.justwrote.kjob.Job
-import it.justwrote.kjob.job.JobExecutionType
-import it.justwrote.kjob.kjob
+import kjob.mongo.Mongo
+import kjob.core.Job
+import kjob.core.job.JobExecutionType
+import kjob.core.KJob
 
 object OrderCreatedEmail : Job("order-created-email") {
     val recipient = string("recipient")

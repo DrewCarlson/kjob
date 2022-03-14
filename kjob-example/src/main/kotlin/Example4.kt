@@ -1,16 +1,16 @@
-import it.justwrote.kjob.InMem
-import it.justwrote.kjob.Job
-import it.justwrote.kjob.kjob
+package example4
+
+import kjob.inmem.InMem
+import kjob.core.Job
+import kjob.core.kjob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlin.time.ExperimentalTime
 import kotlin.time.Duration.Companion.seconds
 
 object MyFirstDelayedJob : Job("my-first-delayed-job") {
     val index = integer("index")
 }
 
-@ExperimentalTime
 fun main() = runBlocking {
     val kjob = kjob(InMem).start()
 

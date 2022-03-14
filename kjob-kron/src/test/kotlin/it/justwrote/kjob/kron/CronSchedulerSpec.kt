@@ -1,4 +1,4 @@
-package it.justwrote.kjob.kron
+package kjob.kron
 
 import com.cronutils.model.CronType
 import com.cronutils.model.definition.CronDefinitionBuilder
@@ -10,11 +10,11 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import it.justwrote.kjob.KronJob
-import it.justwrote.kjob.internal.JobScheduler
-import it.justwrote.kjob.internal.scheduler.newScheduler
-import it.justwrote.kjob.job.JobSettings
-import it.justwrote.kjob.utils.MutableClock
+import kjob.core.KronJob
+import kjob.core.internal.JobScheduler
+import kjob.core.internal.scheduler.newScheduler
+import kjob.core.job.JobSettings
+import kjob.core.utils.MutableClock
 import kotlinx.coroutines.delay
 import java.time.Clock
 import java.time.Instant
@@ -23,11 +23,11 @@ import java.util.concurrent.ScheduledExecutorService
 
 class CronSchedulerSpec : ShouldSpec() {
     companion object {
-        private val cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        private val cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ)
         private val cronParser = CronParser(cronDefinition)
     }
 
-    override fun isolationMode(): IsolationMode? {
+    override fun isolationMode(): IsolationMode {
         return IsolationMode.InstancePerTest
     }
 

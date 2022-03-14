@@ -1,13 +1,15 @@
-import it.justwrote.kjob.Job
-import it.justwrote.kjob.KJob
-import it.justwrote.kjob.Mongo
-import it.justwrote.kjob.job.JobExecutionType
-import it.justwrote.kjob.kjob
+package example3
+
+import kjob.core.Job
+import kjob.core.kjob
+import kjob.mongo.Mongo
+import kjob.core.job.JobExecutionType
+import kjob.core.KJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 interface EmailClient {
-    suspend fun sendTo(to: String, subject: String, body: String): Unit
+    suspend fun sendTo(to: String, subject: String, body: String)
 }
 
 class PrintlnEmailClient : EmailClient {

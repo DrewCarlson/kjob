@@ -1,10 +1,10 @@
-package it.justwrote.kjob.kron
+package kjob.kron
 
 import com.cronutils.model.time.ExecutionTime
-import it.justwrote.kjob.KronJob
-import it.justwrote.kjob.internal.JobScheduler
-import it.justwrote.kjob.internal.scheduler.SimplePeriodScheduler
-import it.justwrote.kjob.job.JobSettings
+import kjob.core.KronJob
+import kjob.core.internal.JobScheduler
+import kjob.core.internal.scheduler.SimplePeriodScheduler
+import kjob.core.job.JobSettings
 import java.time.Clock
 import java.time.ZonedDateTime
 import java.util.concurrent.ScheduledExecutorService
@@ -16,7 +16,7 @@ internal open class CronScheduler(executorService: ScheduledExecutorService,
     private val jobs: MutableMap<KronJob, ExecutionTime> = mutableMapOf()
     private val jobsWithLastExecutionTime: MutableMap<KronJob, ZonedDateTime?> = mutableMapOf()
 
-    fun add(job: KronJob, executionTime: ExecutionTime): Unit {
+    fun add(job: KronJob, executionTime: ExecutionTime) {
         if (jobs.contains(job)) {
             error("Already added to cron execution '$job'")
         }
@@ -29,7 +29,7 @@ internal open class CronScheduler(executorService: ScheduledExecutorService,
         } ?: false
     }
 
-    private suspend fun findNextSchedulableJobs(): Unit {
+    private suspend fun findNextSchedulableJobs() {
         val now = ZonedDateTime.now(clock).plusSeconds(1)
         val inFuture = now.plusSeconds(10)
         jobs

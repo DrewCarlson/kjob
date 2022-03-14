@@ -1,4 +1,4 @@
-package it.justwrote.kjob.kron
+package kjob.kron
 
 import java.util.*
 

@@ -10,7 +10,7 @@
         </encoder>
     </appender>
 
-    <logger name="it.justwrote" level="WARN"/>
+    <logger name="kjob" level="WARN"/>
 
     <root level="ERROR">
         <appender-ref ref="STDOUT"/>

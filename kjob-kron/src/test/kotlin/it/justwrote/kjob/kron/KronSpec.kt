@@ -1,11 +1,11 @@
-package it.justwrote.kjob.kron
+package kjob.kron
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
-import it.justwrote.kjob.InMem
-import it.justwrote.kjob.KronJob
-import it.justwrote.kjob.kjob
-import it.justwrote.kjob.utils.waitSomeTime
+import kjob.inmem.InMem
+import kjob.core.KronJob
+import kjob.core.kjob
+import kjob.core.utils.waitSomeTime
 import java.util.concurrent.CountDownLatch
 
 class KronSpec : ShouldSpec() {
