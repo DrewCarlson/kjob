@@ -3,7 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.drewcarlson/kjob-core?label=maven&color=blue)](https://search.maven.org/search?q=g:org.drewcarlson%20a:kjob-*)
 [![GitHub Build Status](https://img.shields.io/github/workflow/status/DrewCarlson/kjob/Tests/main?style=flat)](https://github.com/DrewCarlson/kjob/actions?query=workflow%3ATests)
 
-A coroutine based persistent background (cron) scheduler written in Kotlin.
+A coroutine based persistent background (cron) scheduler written in Kotlin for Java 11+.
 
 Forked from [justwrote/kjob](https://github.com/justwrote/kjob).
 
