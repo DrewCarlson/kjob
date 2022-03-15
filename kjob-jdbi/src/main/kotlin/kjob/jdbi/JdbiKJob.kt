@@ -70,7 +70,7 @@ class JdbiKJob(config: Configuration) : BaseKJob<JdbiKJob.Configuration>(config)
         null
     }
 
-    private var handle: Handle? = config.handle
+    private var handle: Handle? = jdbi?.open()
 
     private fun buildJdbi(): Jdbi {
         val connectionString = checkNotNull(config.connectionString) {
@@ -80,13 +80,13 @@ class JdbiKJob(config: Configuration) : BaseKJob<JdbiKJob.Configuration>(config)
     }
 
     override val jobRepository: JobRepository = JdbiJobRepository(
-        { checkNotNull(handle) },
+        { checkNotNull(config.handle ?: handle) },
         config,
         Clock.systemUTC()
     )
 
     override val lockRepository: LockRepository = JdbiLockRepository(
-        { checkNotNull(handle) },
+        { checkNotNull(config.handle ?: handle) },
         config,
         Clock.systemUTC()
     )

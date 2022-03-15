@@ -53,7 +53,7 @@ internal class JdbiLockRepository(
     override suspend fun exists(id: UUID): Boolean {
         val handle = handleProvider()
         return handle.createQuery("SELECT COUNT(id) FROM $lockTable WHERE id = :id AND :now < expiresAt")
-            .bind("id", id.toString())
+            .bind("id", id)
             .bind("now", Instant.now(clock).toEpochMilli())
             .mapTo(Int::class.java)
             .one() == 1

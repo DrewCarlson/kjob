@@ -13,6 +13,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.result.RowView
+import org.jdbi.v3.core.statement.Update
 import java.sql.Types
 import java.time.Clock
 import java.time.Instant
@@ -96,7 +97,7 @@ internal class JdbiJobRepository(
     override suspend fun get(id: String): ScheduledJob? {
         val handle = handleProvider()
         return handle.createQuery("SELECT * FROM $jobTable WHERE id = :id")
-            .bind("id", id.toLong())
+            .bind("id", id)
             .map { row -> row.toScheduledJob() }
             .singleOrNull()
     }
@@ -124,19 +125,13 @@ internal class JdbiJobRepository(
         ).bind("status", status.name)
             .bind("retries", retries)
             .bind("updatedAt", Instant.now(clock).toEpochMilli())
-            .bind("id", id.toLong())
-            .bind("statusMessage", statusMessage)
-            .run {
-                if (kjobId == null) {
-                    bindNull("newKjobId", Types.NULL)
-                } else {
-                    bind("newKjobId", kjobId.toString())
-                }
-            }
-            .run {
+            .bind("id", id)
+            .bindOrNull("statusMessage", statusMessage)
+            .bindOrNull("newKjobId", kjobId?.toString())
+            .apply {
                 if (oldKjobId != null) {
                     bind("oldKjobId", oldKjobId.toString())
-                } else this
+                }
             }
             .execute() == 1
     }
@@ -159,7 +154,7 @@ internal class JdbiJobRepository(
             """.trimIndent()
         ).bind("status", JobStatus.CREATED.name)
             .bind("updatedAt", Instant.now(clock).toEpochMilli())
-            .bind("id", id.toLong())
+            .bind("id", id)
             .run {
                 if (oldKjobId != null) {
                     bind("oldKjobId", oldKjobId.toString())
@@ -174,7 +169,7 @@ internal class JdbiJobRepository(
         return handle.createUpdate("UPDATE $jobTable SET startedAt = :startedAt, updatedAt = :updatedAt WHERE id = :id")
             .bind("startedAt", now)
             .bind("updatedAt", now)
-            .bind("id", id.toLong())
+            .bind("id", id)
             .execute() == 1
     }
 
@@ -184,7 +179,7 @@ internal class JdbiJobRepository(
         return handle.createUpdate("UPDATE $jobTable SET completedAt = :completedAt, updatedAt = :updatedAt WHERE id = :id")
             .bind("completedAt", now)
             .bind("updatedAt", now)
-            .bind("id", id.toLong())
+            .bind("id", id)
             .execute() == 1
     }
 
@@ -194,7 +189,7 @@ internal class JdbiJobRepository(
         return handle.createUpdate("UPDATE $jobTable SET step = ifnull(step, 0) + :step, updatedAt = :updatedAt WHERE id = :id")
             .bind("step", step)
             .bind("updatedAt", now)
-            .bind("id", id.toLong())
+            .bind("id", id)
             .execute() == 1
     }
 
@@ -204,7 +199,7 @@ internal class JdbiJobRepository(
         return handle.createUpdate("UPDATE $jobTable SET max = :max, updatedAt = :updatedAt WHERE id = :id")
             .bind("max", max)
             .bind("updatedAt", now)
-            .bind("id", id.toLong())
+            .bind("id", id)
             .execute() == 1
     }
 
@@ -218,10 +213,10 @@ internal class JdbiJobRepository(
         return handle.createQuery("SELECT * FROM $jobTable WHERE status IN (<status>) $namesFilter LIMIT :limit")
             .bindList("status", status.map(JobStatus::name))
             .bind("limit", limit)
-            .run {
+            .apply {
                 if (namesFilter.isNotBlank()) {
                     bindList("names", names.toList())
-                } else this
+                }
             }
             .map { row -> row.toScheduledJob() }
             .asFlow()
@@ -331,4 +326,8 @@ internal class JdbiJobRepository(
                 }
             }
     }
+}
+
+internal fun <T> Update.bindOrNull(column: String, value: T?): Update {
+    return if (value == null) bindNull(column, Types.NULL) else bind(column, value)
 }

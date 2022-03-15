@@ -1,5 +1,8 @@
 package kjob.jdbi.repository
 
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import kjob.core.job.JobSettings
 import kjob.core.repository.JobRepository
 import kjob.core.repository.JobRepositoryContract
 import org.jdbi.v3.core.Jdbi
@@ -28,6 +31,25 @@ class JdbiJobRepositorySpec : JobRepositoryContract() {
         }
         afterSpec {
             handle.close()
+        }
+        should("serialize and deserialize props") {
+            val props = mapOf(
+                "string" to "test",
+                "int" to 0,
+                "long" to 0L,
+                "double" to 0.0,
+                "boolean" to false,
+                "stringList" to listOf("hello", "world"),
+                "intList" to listOf(0, 1),
+                "longList" to listOf(0L, 1L),
+                "doubleList" to listOf(0.0, 1.0),
+                "booleanList" to listOf(false, true)
+            )
+            val job = testee.save(JobSettings("test", "test", props), null)
+            job.settings.properties shouldBe props
+            val jobFromDb = testee.get(job.id)
+            jobFromDb shouldNotBe null
+            jobFromDb?.settings?.properties shouldBe props
         }
     }
 }
