@@ -6,7 +6,6 @@ import kjob.jdbi.JdbiKJob
 import kjob.core.job.JobExecutionType
 import kjob.core.KJob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 interface EmailClient {
     suspend fun sendTo(to: String, subject: String, body: String)
@@ -50,21 +49,19 @@ class EmailToCustomer(private val kjob: KJob, private val client: EmailClient) {
     }
 }
 
-fun main() {
+suspend fun main() {
     // start kjob with mongoDB persistence and default configuration
     val kjob = kjob(JdbiKJob) {
         connectionString = "jdbc:sqlite::memory:"
     }.start()
 
     try {
-        runBlocking {
-            val client: EmailClient = PrintlnEmailClient()
+        val client: EmailClient = PrintlnEmailClient()
 
-            val emailToCustomer = EmailToCustomer(kjob, client)
-            emailToCustomer.scheduleEmailToCustomer("customer@example.com", "4711")
+        val emailToCustomer = EmailToCustomer(kjob, client)
+        emailToCustomer.scheduleEmailToCustomer("customer@example.com", "4711")
 
-            delay(1100) // This is just to prevent a premature shutdown
-        }
+        delay(1100) // This is just to prevent a premature shutdown
     } finally {
         kjob.shutdown()
     }

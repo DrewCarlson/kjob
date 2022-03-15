@@ -105,7 +105,7 @@ object MyMongoModule : ExtensionModule<MyMongoEx, MyMongoEx.Configuration, Mongo
 
 /////////////////
 
-fun main() {
+suspend fun main() {
     val kjob = kjob(InMem) {
         extension(MyGenericModule) {
             myGenericConfigValue = 42
@@ -120,12 +120,10 @@ fun main() {
     }.start()
 
     try {
-        runBlocking {
-            kjob(MyGenericExtension).doStuff1()
-            kjob(MyInMemExtension).doStuff2()
+        kjob(MyGenericExtension).doStuff1()
+        kjob(MyInMemExtension).doStuff2()
 
-            delay(1000) // This is just to prevent a premature shutdown
-        }
+        delay(1000) // This is just to prevent a premature shutdown
     } finally {
         kjob.shutdown()
     }

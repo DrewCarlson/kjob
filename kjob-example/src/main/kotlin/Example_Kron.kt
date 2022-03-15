@@ -6,13 +6,12 @@ import kjob.inmem.InMem
 import kjob.kron.Kron
 import kjob.kron.KronModule
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
 object PrintStuff : KronJob("print-stuff", "* * * ? * * *")
 object PrintMoreStuff : KronJob("print-more-stuff", "*/10 * * ? * * *")
 
-fun main() = runBlocking {
+suspend fun main() {
     val kjob = kjob(InMem) {
         extension(KronModule)
     }.start()

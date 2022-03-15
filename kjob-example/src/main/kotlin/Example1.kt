@@ -4,14 +4,13 @@ import kjob.inmem.InMem
 import kjob.core.Job
 import kjob.core.kjob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 // First of all we need to define a job
 // The shortest possible job definition looks like this:
 object MyFirstJob : Job("my-first-job")
 
 
-fun main() = runBlocking {
+suspend fun main() {
     // This is the shortest possible way to initialize kjob
     // InMem is used in this example which saves all data into memory - NEVER USE IT IN PRODUCTION
     // For production there is 'kjob-mongo'

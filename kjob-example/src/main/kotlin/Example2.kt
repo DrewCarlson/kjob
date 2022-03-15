@@ -5,7 +5,6 @@ import kjob.core.Job
 import kjob.core.job.JobExecutionType
 import kjob.core.kjob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 // You can define as many properties as you like
 // Currently the following data types are supported:
@@ -27,7 +26,7 @@ suspend fun suspendFun() {
     // do some work
 }
 
-fun main() = runBlocking {
+suspend fun main() {
     // We start an in-memory kjob instance by overriding pre defined configuration values
     // For production please use e.g. Mongo
     val kjob = kjob(InMem) {
