@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import kjob.core.utils.waitSomeTime
+import kotlinx.coroutines.delay
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ScheduledExecutorService
 
@@ -61,7 +62,7 @@ class SimplePeriodSchedulerSpec : ShouldSpec() {
             val testee = newTestee(flaky, newScheduler())
 
             testee.start()
-            Thread.sleep(200)
+            delay(100)
             testee.shutdown()
             flaky.successLatch = CountDownLatch(1)
             flaky.successLatch.waitSomeTime(500) shouldBe false
