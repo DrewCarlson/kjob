@@ -65,6 +65,7 @@ project(":kjob-example") {
         implementation(project(":kjob-inmem"))
         implementation(project(":kjob-jdbi"))
 
+        implementation(rootProject.libs.jdbi.core)
         implementation(rootProject.libs.jdbc.sqlite)
         implementation(rootProject.libs.cronutils) {
             exclude(group = "org.slf4j", module = "slf4j-simple")

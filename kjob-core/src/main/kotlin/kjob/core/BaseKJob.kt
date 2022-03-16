@@ -63,6 +63,11 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
          */
         var cleanupSize: Int = 50
 
+        /**
+         * When true, this instance will process jobs.
+         */
+        var isWorker: Boolean = true
+
         internal val extensions: MutableMap<ExtensionId<*>, (KJob) -> Extension> = mutableMapOf()
 
         @Suppress("UNCHECKED_CAST")
@@ -89,7 +94,13 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
     internal open val jobExecutors: JobExecutors by lazy { DefaultJobExecutors(config) }
     internal open val jobScheduler: JobScheduler by lazy { DefaultJobScheduler(jobRepository) }
     internal open val jobRegister: JobRegister by lazy { DefaultJobRegister() }
-    internal open val jobExecutor: JobExecutor by lazy { DefaultJobExecutor(id, jobExecutors.dispatchers, clock, kjobScope.coroutineContext) }
+    internal open val jobExecutor: JobExecutor by lazy {
+        if (config.isWorker) {
+            DefaultJobExecutor(id, jobExecutors.dispatchers, clock, kjobScope.coroutineContext)
+        } else {
+            JobExecutor.NOOP
+        }
+    }
 
     private val kjobScope: CoroutineScope by lazy {
         CoroutineScope(SupervisorJob() + jobExecutors.executorService.asCoroutineDispatcher() + CoroutineName("kjob[$id]") + handler)
@@ -112,7 +123,8 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
         )
     }
     private val jobService: JobService by lazy {
-        JobService(
+        if (config.isWorker) {
+            JobService(
                 jobExecutors.executorService,
                 config.jobExecutionPeriodInSeconds * millis,
                 id,
@@ -120,7 +132,10 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
                 jobRegister,
                 jobExecutor,
                 jobRepository
-        )
+            )
+        } else {
+            JobService.NOOP
+        }
     }
 
     override fun start(): KJob = synchronized(this) {

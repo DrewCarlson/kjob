@@ -53,7 +53,7 @@ internal class JdbiJobRepository(
             );
             """.trimIndent()
         )
-        check(result == 0) {
+        check(result == 0 || result == 1) {
             "Failed to create job table with name '${jobTable}': result == $result"
         }
     }

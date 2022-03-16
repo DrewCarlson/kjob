@@ -102,7 +102,8 @@ kjob(InMem) {
     blockingMaxJobs = 3 // same for blocking jobs
     maxRetries = 5 // how often will a job be retried until it fails
     defaultJobExecutor = JobExecutionType.BLOCKING // default job execution type
-        
+    isWorker = true // disable to prevent this instance from executing jobs
+
     exceptionHandler = { t: Throwable -> logger.error("Unhandled exception", t) } // default error handler for coroutines
     keepAliveExecutionPeriodInSeconds = 60 // the time between 'I am alive' notifications
     jobExecutionPeriodInSeconds = 1 // the time between new job executions

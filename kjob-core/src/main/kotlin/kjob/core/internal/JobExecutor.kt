@@ -17,6 +17,17 @@ import kotlin.coroutines.CoroutineContext
 interface JobExecutor {
     fun execute(runnableJob: RunnableJob, scheduledJob: ScheduledJob, jobRepository: JobRepository)
     fun canExecute(executionType: JobExecutionType): Boolean
+
+    companion object {
+        val NOOP: JobExecutor = object : JobExecutor {
+            override fun canExecute(executionType: JobExecutionType): Boolean = false
+            override fun execute(
+                runnableJob: RunnableJob,
+                scheduledJob: ScheduledJob,
+                jobRepository: JobRepository
+            ) = Unit
+        }
+    }
 }
 
 internal class DefaultJobExecutor(
@@ -29,7 +40,7 @@ internal class DefaultJobExecutor(
 
     override fun execute(runnableJob: RunnableJob, scheduledJob: ScheduledJob, jobRepository: JobRepository) {
         val dispatcher = executors[runnableJob.executionType]?.coroutineDispatcher
-                ?: error("Dispatcher not defined for ${runnableJob.executionType}")
+            ?: error("Dispatcher not defined for ${runnableJob.executionType}")
 
         launch(dispatcher + CoroutineName("Job[${scheduledJob.settings.id}]")) {
             scheduledJob.runAt?.let { runAt ->

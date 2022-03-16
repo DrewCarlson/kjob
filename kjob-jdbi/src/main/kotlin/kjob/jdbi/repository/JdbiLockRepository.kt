@@ -32,7 +32,7 @@ internal class JdbiLockRepository(
             );
             """.trimIndent()
         )
-        check(result == 0) {
+        check(result == 0 || result == 1) {
             "Failed to create lock table with name '$lockTable': result == $result"
         }
     }

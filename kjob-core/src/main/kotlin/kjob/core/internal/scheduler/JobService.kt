@@ -14,7 +14,31 @@ import java.util.*
 import java.util.concurrent.ScheduledExecutorService
 import kotlin.coroutines.CoroutineContext
 
-internal class JobService(
+internal interface JobService {
+    companion object {
+        operator fun invoke(
+            executorService: ScheduledExecutorService,
+            period: Long,
+            id: UUID,
+            coroutineContext: CoroutineContext,
+            jobRegister: JobRegister,
+            jobExecutor: JobExecutor,
+            jobRepository: JobRepository
+        ): JobService = JobServiceImpl(
+            executorService, period, id, coroutineContext, jobRegister, jobExecutor, jobRepository
+        )
+
+        val NOOP: JobService = object : JobService {
+            override fun start() = Unit
+            override fun shutdown() = Unit
+        }
+    }
+
+    fun start()
+    fun shutdown()
+}
+
+internal class JobServiceImpl(
     executorService: ScheduledExecutorService,
     period: Long,
     private val id: UUID,
@@ -22,7 +46,7 @@ internal class JobService(
     private val jobRegister: JobRegister,
     private val jobExecutor: JobExecutor,
     private val jobRepository: JobRepository
-) : SimplePeriodScheduler(executorService, period), CoroutineScope {
+) : SimplePeriodScheduler(executorService, period), JobService, CoroutineScope {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private suspend fun executeJob(scheduledJob: ScheduledJob) {
@@ -53,7 +77,7 @@ internal class JobService(
         }
     }
 
-    fun start(): Unit = run {
+    override fun start(): Unit = run {
         logger.debug("Job service scheduled.")
         tryExecuteJob()
     }
