@@ -48,7 +48,7 @@ internal class DefaultJobExecutor(
                 logger.debug("kjob[$kjobId] is executing ${scheduledJob.settings.name}[${scheduledJob.settings.id}]")
                 val jobProps = scheduledJob.settings.properties
                 runnableJob.execute(JobContextWithProps(coroutineContext, JobProps(jobProps), scheduledJob, jobRepository))
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 logger.error("${scheduledJob.settings.name}[${scheduledJob.settings.id}] failed", e)
                 JobError(e)
             }

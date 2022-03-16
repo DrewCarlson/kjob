@@ -18,7 +18,7 @@ abstract class SimplePeriodScheduler(private val executorService: ScheduledExecu
             runBlocking {
                 try {
                     block()
-                } catch (e: Exception) {
+                } catch (e: Throwable) {
                     logger.error("Scheduled task failed", e)
                     run(block, periodInMilliSeconds)
                     throw e

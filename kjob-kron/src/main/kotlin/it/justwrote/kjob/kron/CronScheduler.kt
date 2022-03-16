@@ -42,7 +42,7 @@ internal open class CronScheduler(executorService: ScheduledExecutorService,
                 try {
                     jobScheduler.schedule(settings, instant)
                     jobsWithLastExecutionTime[job] = nextExecution
-                } catch (e: Exception) {
+                } catch (e: Throwable) {
                     // we ignore this error since it is highly likely a duplicate entry for a cron job
                     // which happens if there are multiple instances running - only one can win
                 }
