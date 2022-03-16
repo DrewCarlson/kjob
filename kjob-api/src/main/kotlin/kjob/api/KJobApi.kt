@@ -28,8 +28,7 @@ class KjobApiEx(
     class Configuration : BaseExtension.Configuration()
 
     private val jobStatuses by lazy { JobStatus.values().toSet() }
-
-    internal val instanceId: String = kjob.id.toString()
+    internal val instanceId by lazy { kjob.id.toString() }
 
     internal fun shareDatabase(other: KjobApiEx): Boolean {
         val mongo = (kjobConfig as? MongoKJob.Configuration)

@@ -76,7 +76,7 @@ private fun Route.installKJobApiRoutes(
                     return@get call.respond(NotFound)
                 }
                 val filteredExtensions = if (instanceId == null) {
-                    extensions
+                    uniqueDatabaseExtensions
                 } else {
                     extensions.filter { it.instanceId == instanceId }
                 }
