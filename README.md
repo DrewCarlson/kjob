@@ -15,6 +15,7 @@ Forked from [justwrote/kjob](https://github.com/justwrote/kjob).
 * Supports multiple instances
 * Failed job rescheduling
 * Configurable pools for blocking and non-blocking jobs
+* [Ktor](https://ktor.io) powered [Json REST APi](#Json REST API)
 * Custom [extensions](#extensions) API
 
 ## Installation
@@ -113,7 +114,7 @@ kjob(InMem) {
 }.start()
 ```
 
-## Json API
+## Json REST API
 
 The `kjob-api` module provides [Ktor](https://ktor.io) server configuration and routes for managing jobs and instances.
 
@@ -134,12 +135,12 @@ embeddedServer(Netty) {
 
 ```
 Routes:
-   /kjob/statuses       - List available job statuses
-   /kjob/job-types      - List all registered job types
-   /kjob/jobs           - List all persisted jobs
-   /kjob/jobs/<id>      - Get persisted job by id
-   /kjob/instances      - List all kjob instances
-   /kjob/instances/<id> - Get kjob instance by id
+   /kjob/statuses       - GET available job statuses
+   /kjob/job-types      - GET all registered job types
+   /kjob/jobs           - GET all persisted jobs
+   /kjob/jobs/<id>      - GET persisted job by id
+   /kjob/instances      - GET all kjob instances
+   /kjob/instances/<id> - GET kjob instance by id
 ```
 
 ## JDBI (SQL) Configuration
@@ -264,7 +265,6 @@ You can find more in this [example](https://github.com/DrewCarlson/kjob/blob/mai
 Here is an unordered list of features that I would like to see in kjob.
 If you consider one of them important please open an issue.
 
-- REST API
 - Dashboard
 - Redis job storage
 - Priority support
