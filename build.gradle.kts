@@ -159,6 +159,7 @@ project(":kjob-api") {
         implementation(project(":kjob-mongo"))
         implementation(project(":kjob-jdbi"))
         implementation(project(":kjob-inmem"))
+        implementation(project(":kjob-kron"))
         implementation(rootProject.libs.ktor.server.core)
         implementation(rootProject.libs.ktor.server.contentNegotiation)
         implementation(rootProject.libs.ktor.server.compression)
@@ -167,6 +168,9 @@ project(":kjob-api") {
         implementation(rootProject.libs.serialization.core)
         implementation(rootProject.libs.serialization.json)
         implementation(rootProject.libs.coroutines.core)
+        implementation(rootProject.libs.cronutils) {
+            exclude(group = "org.slf4j", module = "slf4j-simple")
+        }
 
         implementation(rootProject.libs.mongodbReactive)
         implementation(rootProject.libs.jdbi.core)

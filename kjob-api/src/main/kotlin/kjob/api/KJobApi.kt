@@ -1,5 +1,9 @@
 package kjob.api
 
+import com.cronutils.model.CronType
+import com.cronutils.model.definition.CronDefinitionBuilder
+import com.cronutils.model.time.ExecutionTime
+import com.cronutils.parser.CronParser
 import kjob.core.BaseKJob
 import kjob.core.Job
 import kjob.core.KronJob
@@ -16,6 +20,8 @@ import kjob.mongo.MongoKJob
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.json.*
+import java.time.ZonedDateTime
+import java.util.*
 
 object KjobApiExtension : ExtensionId<KjobApiEx>
 
@@ -29,6 +35,9 @@ class KjobApiEx(
 
     private val jobStatuses by lazy { JobStatus.values().toSet() }
     internal val instanceId by lazy { kjob.id.toString() }
+    private val cronParser by lazy {
+        CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ))
+    }
 
     internal fun shareDatabase(other: KjobApiEx): Boolean {
         val mongo = (kjobConfig as? MongoKJob.Configuration)
@@ -59,7 +68,34 @@ class KjobApiEx(
                 put("name", runnableJob.job.name)
                 put("maxRetries", runnableJob.maxRetries)
                 put("executionType", runnableJob.executionType.name)
-                put("kron", (runnableJob.job as? KronJob)?.cronExpression)
+                (runnableJob.job as? KronJob)?.also { kron ->
+                    putJsonObject("kron") {
+                        val cron = cronParser.parse(kron.cronExpression)
+                        val executionTime =  ExecutionTime.forCron(cron)
+                        put("expression", kron.cronExpression)
+                        putJsonObject("executionTime") {
+                            val now = ZonedDateTime.now(kjob.clock)
+                            val timeUntilNext = executionTime.timeToNextExecution(now)
+                            val next = executionTime.nextExecution(now)
+                            val previous = executionTime.lastExecution(now)
+                            if (next.isPresent) {
+                                put("next", next.get().toInstant().toString())
+                            } else {
+                                put("next", JsonNull)
+                            }
+                            if (previous.isPresent) {
+                                put("previous", previous.get().toInstant().toString())
+                            } else {
+                                put("previous", JsonNull)
+                            }
+                            if (timeUntilNext.isPresent) {
+                                put("millisUntilNext", timeUntilNext.get().toMillis())
+                            } else {
+                                put("millisUntilNext", JsonNull)
+                            }
+                        }
+                    }
+                } ?: put("kron", JsonNull)
                 if (propNames == null) {
                     put("propNames", JsonArray(emptyList()))
                 } else {

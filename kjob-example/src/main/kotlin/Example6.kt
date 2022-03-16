@@ -5,11 +5,15 @@ import io.ktor.server.netty.*
 import kjob.api.KJobApiModule
 import kjob.api.installKJobApi
 import kjob.core.Job
+import kjob.core.KronJob
 import kjob.core.kjob
 import kjob.jdbi.JdbiKJob
+import kjob.kron.Kron
+import kjob.kron.KronModule
 import kotlinx.coroutines.delay
 import org.jdbi.v3.core.Jdbi
 import java.time.Duration
+import java.time.Instant
 import java.util.*
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
@@ -23,6 +27,9 @@ object LogText : Job("log-text") {
     val text = string("text")
 }
 
+object PrintStuff : KronJob("print-stuff", "* * * ? * * *")
+object PrintMoreStuff : KronJob("print-more-stuff", "*/10 * * ? * * *")
+
 suspend fun main() {
     val dbHandle = Jdbi.create("jdbc:sqlite::memory:").open()
 
@@ -34,7 +41,21 @@ suspend fun main() {
     val workerKjob = kjob(JdbiKJob) {
         handle = dbHandle
         extension(KJobApiModule)
+        extension(KronModule)
     }.start()
+
+    workerKjob(Kron).kron(PrintStuff) {
+        maxRetries = 3
+        execute {
+            println("${Instant.now()}: executing kron task '${it.name}' with jobId '$jobId'")
+        }
+    }
+
+    workerKjob(Kron).kron(PrintMoreStuff) {
+        execute {
+            println("${Instant.now()}: executing kron task '${it.name}' with jobId '$jobId'")
+        }
+    }
 
     workerKjob.register(LogNumber) {
         maxRetries = 0
