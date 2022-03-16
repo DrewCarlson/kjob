@@ -69,6 +69,14 @@ class KjobApiEx(
         }
     }
 
+    internal suspend fun jobCounts(filterNames: Set<String>?): Map<JobStatus, Int> {
+        val jobsResult = jobs(filterNames, null, null)
+        val allJobStatuses = jobsResult.mapNotNull { it["status"]?.jsonPrimitive?.contentOrNull }
+        return JobStatus.values().associateWith { status ->
+            allJobStatuses.filter { it == status.name }.size
+        }
+    }
+
     internal suspend fun job(id: String): JsonObject? {
         return kjob.jobRepository.get(id)?.toJsonObject()
     }

@@ -8,6 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kjob.core.KJob
 import kjob.core.job.JobStatus
+import kotlinx.serialization.json.*
 
 fun Application.installKJobApi(
     kjobInstance: KJob,
@@ -54,13 +55,38 @@ private fun Route.installKJobApiRoutes(
         get("/statuses") {
             call.respond(jobStatuses)
         }
+        get("/stats") {
+            val filterNames = call.request.queryParameters["names"]?.split(",")?.toSet()
+            val instanceId = call.parameters["instanceId"]
+            if (instanceId != null && extensions.none { it.instanceId == instanceId }) {
+                return@get call.respond(NotFound)
+            }
+            val filteredExtensions = if (instanceId == null) {
+                uniqueDatabaseExtensions
+            } else {
+                extensions.filter { it.instanceId == instanceId }
+            }
+            val jobCounts = filteredExtensions.fold(emptyMap<JobStatus, Int>()) { acc, extension ->
+                extension.jobCounts(filterNames).mapValues { (status, count) ->
+                    (acc[status] ?: 0) + count
+                }
+            }
+            call.respond(buildJsonObject {
+                putJsonObject("jobs") {
+                    put("total", jobCounts.map { (_, values) -> values }.sum())
+                    jobCounts.forEach { (status, jobCount) ->
+                        put(status.name.lowercase(), jobCount)
+                    }
+                }
+            })
+        }
         get("/job-types") {
             call.respond(extensions.flatMap(KjobApiEx::jobTypes))
         }
         route("/jobs") {
             get {
                 val limit = call.request.queryParameters["limit"]?.toIntOrNull()
-                val filterNames = call.request.queryParameters["names"]?.split(",")?.toSet().orEmpty()
+                val filterNames = call.request.queryParameters["names"]?.split(",")?.toSet()
                 val filterStatuses = call.request.queryParameters["status"]
                     ?.split(",")
                     ?.mapNotNull { runCatching { JobStatus.valueOf(it) }.getOrNull() }
@@ -90,8 +116,8 @@ private fun Route.installKJobApiRoutes(
 
             get("/{id}") {
                 val id = call.parameters["id"] ?: return@get call.respond(NotFound)
-                val instance = extensions.find { it.instanceId == id } ?: return@get call.respond(NotFound)
-                call.respond(instance)
+                val extension = extensions.find { it.instanceId == id } ?: return@get call.respond(NotFound)
+                call.respond(extension.instance())
             }
         }
     }

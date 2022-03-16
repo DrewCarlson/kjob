@@ -135,13 +135,16 @@ embeddedServer(Netty) {
 
 ```
 Routes:
-   /kjob/statuses       - GET available job statuses
-   /kjob/job-types      - GET all registered job types
-   /kjob/jobs           - GET all persisted jobs
-   /kjob/jobs/<id>      - GET persisted job by id
-   /kjob/instances      - GET all kjob instances
-   /kjob/instances/<id> - GET kjob instance by id
+   /kjob/statuses       - GET available job statuses    -
+   /kjob/stats          - GET job counts by status      - Parameters: ?instanceId=<kjob worker ID>&names=job1,job2
+   /kjob/job-types      - GET all registered job types  -
+   /kjob/jobs           - GET all persisted jobs        - Parameters: ?limit=10&status=COMPLETE,ERROR&names=job1,job2
+   /kjob/jobs/<id>      - GET persisted job by id       - Parameters: ?instanceId=<kjob worker ID>
+   /kjob/instances      - GET all kjob instances        -
+   /kjob/instances/<id> - GET kjob instance by id       -
 ```
+
+A complete Ktor server example can be found in [Example6.kt](kjob-example/src/main/kotlin/Example6.kt).
 
 ## JDBI (SQL) Configuration
 
