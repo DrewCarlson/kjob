@@ -64,7 +64,11 @@ project(":kjob-example") {
         implementation(project(":kjob-mongo"))
         implementation(project(":kjob-inmem"))
         implementation(project(":kjob-jdbi"))
+        implementation(project(":kjob-api"))
 
+        implementation(rootProject.libs.ktor.server.core)
+        implementation(rootProject.libs.ktor.server.cors)
+        implementation(rootProject.libs.ktor.server.netty)
         implementation(rootProject.libs.jdbi.core)
         implementation(rootProject.libs.jdbc.sqlite)
         implementation(rootProject.libs.cronutils) {
@@ -141,6 +145,32 @@ project(":kjob-kron") {
         testImplementation(project(":kjob-inmem"))
         testImplementation(rootProject.libs.kotest.runner)
         testImplementation(rootProject.libs.kotest.assertions)
+        testImplementation(rootProject.libs.mockk)
+        testImplementation(project(path = ":kjob-core", configuration = "testArtifacts"))
+
+        testRuntimeOnly(rootProject.libs.logback)
+    }
+}
+
+project(":kjob-api") {
+    apply(from = "../gradle/publishing.gradle.kts")
+    dependencies {
+        implementation(project(":kjob-core"))
+        implementation(project(":kjob-mongo"))
+        implementation(project(":kjob-jdbi"))
+        implementation(project(":kjob-inmem"))
+        implementation(rootProject.libs.ktor.server.core)
+        implementation(rootProject.libs.ktor.server.contentNegotiation)
+        implementation(rootProject.libs.ktor.server.compression)
+        implementation(rootProject.libs.ktor.server.websockets)
+        implementation(rootProject.libs.ktor.serialization)
+        implementation(rootProject.libs.serialization.core)
+        implementation(rootProject.libs.serialization.json)
+        implementation(rootProject.libs.coroutines.core)
+
+        implementation(rootProject.libs.mongodbReactive)
+        implementation(rootProject.libs.jdbi.core)
+        testImplementation(rootProject.libs.jdbc.sqlite)
         testImplementation(rootProject.libs.mockk)
         testImplementation(project(path = ":kjob-core", configuration = "testArtifacts"))
 

@@ -19,6 +19,8 @@ mockk = "1.12.3"
 kotest = "5.2.1"
 cronutils = "9.1.6"
 
+ktorio = "2.0.0-beta-1"
+
 [plugins]
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
@@ -53,3 +55,22 @@ cronutils = { module = "com.cronutils:cron-utils", version.ref = "cronutils" }
 embedMongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo", version = "3.4.3" }
 mongodbReactive = { module = "org.mongodb:mongodb-driver-reactivestreams", version = "4.5.0" }
 rxjava = { module = "io.reactivex.rxjava2:rxkotlin", version = "2.4.0" }
+
+ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorio" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorio" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorio" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorio" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorio" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktorio" }
+
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorio" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorio" }
+ktor-server-tests = { module = "io.ktor:ktor-server-tests", version.ref = "ktorio" }
+ktor-server-contentNegotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorio" }
+ktor-server-autoHeadResponse = { module = "io.ktor:ktor-server-auto-head-response", version.ref = "ktorio" }
+ktor-server-cachingHeaders = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktorio" }
+ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktorio" }
+ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktorio" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorio" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktorio" }

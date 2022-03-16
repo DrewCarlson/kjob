@@ -29,6 +29,7 @@ repositories {
 
 dependencies {
   implementation("org.drewcarlson:kjob-core:<version>")
+  implementation("org.drewcarlson:kjob-api:<version>") // for Ktor Json API routes
   implementation("org.drewcarlson:kjob-jdbi:<version>") // for SQL/JDBC persistence
   implementation("org.drewcarlson:kjob-mongo:<version>") // for mongoDB persistence
   testImplementation("org.drewcarlson:kjob-inmem:<version>") // for in-memory 'persistence' (e.g. tests)
@@ -110,6 +111,35 @@ kjob(InMem) {
     cleanupPeriodInSeconds = 300 // the time between job clean ups
     cleanupSize = 50 // the amount of jobs that will be cleaned up per schedule
 }.start()
+```
+
+## Json API
+
+The `kjob-api` module provides [Ktor](https://ktor.io) server configuration and routes for managing jobs and instances.
+
+```kotlin
+val kjob = kjob(JdbiKJob) {
+    connectionString = "..."
+    extension(KJobApiModule)
+}
+
+embeddedServer(Netty) {
+    installKJobApi(
+        kjobInstance = kjob, // Or listOf(kjob, ...)
+        rootRoute = null, // The root `route { .. }` to install kjob routes under
+        installSerialization = true // Automatically install Json content negotiation
+    )
+}.start(wait = true)
+```
+
+```
+Routes:
+   /kjob/statuses       - List available job statuses
+   /kjob/job-types      - List all registered job types
+   /kjob/jobs           - List all persisted jobs
+   /kjob/jobs/<id>      - Get persisted job by id
+   /kjob/instances      - List all kjob instances
+   /kjob/instances/<id> - Get kjob instance by id
 ```
 
 ## JDBI (SQL) Configuration
