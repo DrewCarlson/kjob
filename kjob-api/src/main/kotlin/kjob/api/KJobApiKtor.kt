@@ -72,6 +72,7 @@ private fun Route.installKJobApiRoutes(
                 }
             }
             call.respond(buildJsonObject {
+                put("workers", extensions.size)
                 putJsonObject("jobs") {
                     put("total", jobCounts.map { (_, values) -> values }.sum())
                     jobCounts.forEach { (status, jobCount) ->
