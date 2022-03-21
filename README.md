@@ -26,6 +26,8 @@ Forked from [justwrote/kjob](https://github.com/justwrote/kjob).
 ```kotlin
 repositories {
   mavenCentral()
+  // (Optional) For Snapshots:
+  maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
