@@ -1,5 +1,7 @@
 package kjob.core
 
+import kotlin.reflect.KClass
+
 interface BaseJob {
     val name: String
 }
@@ -10,6 +12,11 @@ abstract class Job(override val name: String) : BaseJob {
     private val propNamesList = mutableListOf<String>()
     val propNames: List<String>
         get() = propNamesList
+
+    @Suppress("UNUSED_PARAMETER")
+    protected fun <T : Any, J : Job> J.serializable(name: String, kclass: KClass<T>): Prop<J, T> {
+        return Prop(name.also(propNamesList::add), true)
+    }
 
     protected fun <J : Job> J.integer(name: String): Prop<J, Int> = Prop(name.also(propNamesList::add))
     protected fun <J : Job> J.double(name: String): Prop<J, Double> = Prop(name.also(propNamesList::add))
@@ -27,4 +34,18 @@ abstract class Job(override val name: String) : BaseJob {
     protected fun <J : Job, T : Any> Prop<J, T>.nullable(): Prop<J, T?> = Prop(name)
 }
 
-data class Prop<J : Job, T> internal constructor(val name: String)
+interface Prop<J : Job, T> {
+    val name: String
+
+    companion object {
+        data class Impl<J : Job, T>(
+            override val name: String,
+            val serialize: Boolean
+        ) : Prop<J, T>
+
+        operator fun <J : Job, T> invoke(
+            name: String,
+            serialize: Boolean = false
+        ): Prop<J, T> = Impl(name, serialize)
+    }
+}

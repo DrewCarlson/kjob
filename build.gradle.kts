@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.testLogger)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.serialization) apply false
 }
 
 allprojects {
@@ -58,6 +59,7 @@ subprojects {
 }
 
 project(":kjob-example") {
+    apply(plugin = "kotlinx-serialization")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(project(":kjob-kron"))
@@ -66,6 +68,7 @@ project(":kjob-example") {
         implementation(project(":kjob-jdbi"))
         implementation(project(":kjob-api"))
 
+        implementation(rootProject.libs.serialization.json)
         implementation(rootProject.libs.ktor.server.core)
         implementation(rootProject.libs.ktor.server.cors)
         implementation(rootProject.libs.ktor.server.netty)
@@ -183,9 +186,12 @@ project(":kjob-api") {
 }
 
 project(":kjob-core") {
+    apply(plugin = "kotlinx-serialization")
     apply(from = "../gradle/publishing.gradle.kts")
     dependencies {
         implementation(rootProject.libs.coroutines.core)
+        implementation(rootProject.libs.serialization.core)
+        implementation(rootProject.libs.serialization.json)
         api(rootProject.libs.slf4j)
 
         testImplementation(rootProject.libs.kotest.runner)

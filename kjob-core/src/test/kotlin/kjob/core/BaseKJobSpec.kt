@@ -22,6 +22,7 @@ import kjob.core.internal.scheduler.sj
 import kjob.core.utils.MutableClock
 import kjob.core.utils.waitSomeTime
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.serialization.Serializable
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
@@ -34,6 +35,11 @@ class BaseKJobSpec : ShouldSpec() {
     override fun isolationMode(): IsolationMode {
         return IsolationMode.InstancePerTest
     }
+
+    @Serializable
+    data class SerializableProp(
+        val a: Int, val b: String, val c: Boolean
+    )
 
     object TestJob : Job("test-job") {
         val start = integer("start").nullable()
@@ -52,6 +58,7 @@ class BaseKJobSpec : ShouldSpec() {
         val y4 = boolList("y4")
         val y5 = stringList("y5")
 
+        val serializable = serializable("serializable", SerializableProp::class)
     }
 
     val jobRepoMock = mockk<JobRepository>()
@@ -63,7 +70,11 @@ class BaseKJobSpec : ShouldSpec() {
 
     object TestExtension : ExtensionId<TestEx>
 
-    class TestEx(val config: Configuration, private val kjobConfig: BaseKJob.Configuration, private val kjob: BaseKJob<BaseKJob.Configuration>) : BaseExtension(TestExtension) {
+    class TestEx(
+        val config: Configuration,
+        private val kjobConfig: BaseKJob.Configuration,
+        private val kjob: BaseKJob<BaseKJob.Configuration>
+    ) : BaseExtension(TestExtension) {
         class Configuration : BaseExtension.Configuration() {
             var start = 0
             var stop = 0
@@ -115,7 +126,8 @@ class BaseKJobSpec : ShouldSpec() {
                     "y2" to listOf(1.2, 3.4, 5.6),
                     "y3" to listOf(1L, 2L, 3L),
                     "y4" to listOf(true, false, true),
-                    "y5" to listOf("a", "b", "c")
+                    "y5" to listOf("a", "b", "c"),
+                    "serializable" to """{"a":1,"b":"2","c":false}"""
             )
             val settings = js("my-test-id", props = map)
             val sj = sj(settings = settings)
@@ -153,6 +165,7 @@ class BaseKJobSpec : ShouldSpec() {
                     props[it.y3] shouldBe listOf(1L, 2L, 3L)
                     props[it.y4] shouldBe listOf(true, false, true)
                     props[it.y5] shouldBe listOf("a", "b", "c")
+                    props[it.serializable] shouldBe SerializableProp(1, "2", false)
 
                     val start = props[it.start] ?: 0
                     val end = props[it.end]
@@ -177,6 +190,7 @@ class BaseKJobSpec : ShouldSpec() {
                 props[it.y3] = listOf(1L, 2L, 3L)
                 props[it.y4] = listOf(true, false, true)
                 props[it.y5] = listOf("a", "b", "c")
+                props[it.serializable] = SerializableProp(1, "2", false)
             }
             coVerify(timeout = 200) { jobSchedulerMock.schedule(settings) }
             coVerify(timeout = 200, exactly = 4) { jobRepoMock.stepProgress(sj.id) }

@@ -7,6 +7,7 @@ import kjob.core.job.JobStatus.*
 import kjob.core.job.ScheduledJob
 import kjob.core.repository.JobRepository
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import java.time.Clock
 import java.time.Duration
@@ -34,7 +35,8 @@ internal class DefaultJobExecutor(
     private val kjobId: UUID,
     private val executors: Map<JobExecutionType, DispatcherWrapper>,
     private val clock: Clock,
-    override val coroutineContext: CoroutineContext
+    override val coroutineContext: CoroutineContext,
+    private val json: Json,
 ) : JobExecutor, CoroutineScope {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -58,7 +60,7 @@ internal class DefaultJobExecutor(
             val result = try {
                 logger.debug("kjob[$kjobId] is executing ${scheduledJob.settings.name}[${scheduledJob.settings.id}]")
                 val jobProps = scheduledJob.settings.properties
-                runnableJob.execute(JobContextWithProps(coroutineContext, JobProps(jobProps), scheduledJob, jobRepository))
+                runnableJob.execute(JobContextWithProps(coroutineContext, JobProps(jobProps, json), scheduledJob, jobRepository))
             } catch (e: Throwable) {
                 logger.error("${scheduledJob.settings.name}[${scheduledJob.settings.id}] failed", e)
                 JobError(e)

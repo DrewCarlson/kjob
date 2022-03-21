@@ -21,6 +21,7 @@ import kjob.core.job.ScheduledJob
 import kjob.core.repository.JobRepository
 import kjob.core.utils.waitSomeTime
 import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.json.Json
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -77,7 +78,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(mapOf("int-test" to 3)),
+                    JobProps(mapOf("int-test" to 3), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -96,7 +97,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -116,7 +117,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -138,7 +139,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -160,7 +161,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -189,7 +190,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -222,7 +223,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -245,7 +246,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )
@@ -268,7 +269,7 @@ class DefaultRunnableJobSpec : ShouldSpec() {
             val result = testee.execute(
                 JobContextWithProps<TestJob>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )

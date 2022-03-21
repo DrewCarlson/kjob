@@ -107,6 +107,7 @@ kjob(InMem) {
     maxRetries = 5 // how often will a job be retried until it fails
     defaultJobExecutor = JobExecutionType.BLOCKING // default job execution type
     isWorker = true // disable to prevent this instance from executing jobs
+    json = kotlinx.serialization.Json // optional Json instance for prop data serialization
 
     exceptionHandler = { t: Throwable -> logger.error("Unhandled exception", t) } // default error handler for coroutines
     keepAliveExecutionPeriodInSeconds = 60 // the time between 'I am alive' notifications

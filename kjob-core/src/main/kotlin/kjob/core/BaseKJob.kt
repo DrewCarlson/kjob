@@ -14,6 +14,7 @@ import kjob.core.job.JobSettings
 import kjob.core.repository.JobRepository
 import kjob.core.repository.LockRepository
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import java.time.Clock
 import java.time.Instant
@@ -68,6 +69,11 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
          */
         var isWorker: Boolean = true
 
+        /**
+         * The [Json] serializer used for job props, defaults to [Json.Default].
+         */
+        var json: Json = Json
+
         internal val extensions: MutableMap<ExtensionId<*>, (KJob) -> Extension> = mutableMapOf()
 
         @Suppress("UNCHECKED_CAST")
@@ -96,7 +102,7 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
     internal open val jobRegister: JobRegister by lazy { DefaultJobRegister() }
     internal open val jobExecutor: JobExecutor by lazy {
         if (config.isWorker) {
-            DefaultJobExecutor(id, jobExecutors.dispatchers, clock, kjobScope.coroutineContext)
+            DefaultJobExecutor(id, jobExecutors.dispatchers, clock, kjobScope.coroutineContext, config.json)
         } else {
             JobExecutor.NOOP
         }
@@ -158,7 +164,7 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
     }
 
     override suspend fun <J : Job> schedule(job: J, block: ScheduleContext<J>.(J) -> Unit): KJob {
-        val ctx = ScheduleContext<J>()
+        val ctx = ScheduleContext<J>(config.json)
         block(ctx, job)
         val settings = JobSettings(ctx.jobId, job.name, ctx.props.props)
         jobScheduler.schedule(settings)
@@ -166,7 +172,7 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
     }
 
     override suspend fun <J : Job> schedule(job: J, delay: java.time.Duration, block: ScheduleContext<J>.(J) -> Unit): KJob {
-        val ctx = ScheduleContext<J>()
+        val ctx = ScheduleContext<J>(config.json)
         block(ctx, job)
         val settings = JobSettings(ctx.jobId, job.name, ctx.props.props)
         jobScheduler.schedule(settings, Instant.now(clock).plus(delay))
@@ -174,7 +180,7 @@ abstract class BaseKJob<Config : BaseKJob.Configuration>(val config: Config) : K
     }
 
     override suspend fun <J : Job> schedule(job: J, delay: Duration, block: ScheduleContext<J>.(J) -> Unit): KJob {
-        val ctx = ScheduleContext<J>()
+        val ctx = ScheduleContext<J>(config.json)
         block(ctx, job)
         val settings = JobSettings(ctx.jobId, job.name, ctx.props.props)
         jobScheduler.schedule(settings, Instant.now(clock).plus(delay.toJavaDuration()))

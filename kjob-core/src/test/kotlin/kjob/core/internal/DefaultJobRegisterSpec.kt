@@ -16,6 +16,7 @@ import kjob.core.job.ScheduledJob
 import kjob.core.repository.JobRepository
 import kjob.core.utils.waitSomeTime
 import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.json.Json
 import java.util.*
 import java.util.concurrent.CountDownLatch
 
@@ -62,7 +63,7 @@ class DefaultJobRegisterSpec : ShouldSpec() {
             val result = runnableJob.execute(
                 JobContextWithProps<Job>(
                     Dispatchers.Unconfined,
-                    JobProps(emptyMap()),
+                    JobProps(emptyMap(), Json),
                     sjMock,
                     jobRepositoryMock
             )

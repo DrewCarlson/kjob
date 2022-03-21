@@ -14,6 +14,7 @@ import kjob.core.job.ScheduledJob
 import kjob.core.repository.JobRepository
 import kjob.core.utils.MutableClock
 import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.json.Json
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
@@ -43,13 +44,13 @@ class DefaultJobExecutorSpec : ShouldSpec() {
 
 
         should("check if execution for execution type is possible") {
-            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined, Json)
             testee.canExecute(JobExecutionType.NON_BLOCKING) shouldBe false
             testee.canExecute(JobExecutionType.BLOCKING) shouldBe true
         }
 
         should("throw an exception if dispatcher for requested execution type is not defined") {
-            val testee = DefaultJobExecutor(kjobId, mapOf(JobExecutionType.BLOCKING to dispatcherWrapperMock1), Clock.systemUTC(), Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, mapOf(JobExecutionType.BLOCKING to dispatcherWrapperMock1), Clock.systemUTC(), Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             every { runnableJobMock.executionType } returns JobExecutionType.NON_BLOCKING
             shouldThrow<IllegalStateException> {
@@ -58,21 +59,21 @@ class DefaultJobExecutorSpec : ShouldSpec() {
         }
 
         should("throw an exception if dispatcher for requested execution type is not defined #2") {
-            val testee = DefaultJobExecutor(kjobId, mapOf(JobExecutionType.BLOCKING to dispatcherWrapperMock1), Clock.systemUTC(), Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, mapOf(JobExecutionType.BLOCKING to dispatcherWrapperMock1), Clock.systemUTC(), Dispatchers.Unconfined, Json)
             shouldThrow<IllegalStateException> {
                 testee.canExecute(JobExecutionType.NON_BLOCKING)
             }
         }
 
         should("execute a job successfully") {
-            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
             val jobRepositoryMock = mockk<JobRepository>()
             every { runnableJobMock.executionType } returns JobExecutionType.NON_BLOCKING
             val context = slot<JobContextWithProps<Job>>()
             coEvery { runnableJobMock.execute(capture(context)) } answers {
-                if (context.isCaptured && context.captured.props == JobProps<Job>(mapOf("test" to 1))) {
+                if (context.isCaptured && context.captured.props == JobProps<Job>(mapOf("test" to 1), Json)) {
                     JobSuccessful
                 } else {
                     JobError(RuntimeException("failed"))
@@ -104,7 +105,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
         }
 
         should("handle an exception while executing a job gracefully") {
-            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
             val jobRepositoryMock = mockk<JobRepository>()
@@ -138,7 +139,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
         }
 
         should("handle a JobError after execution") {
-            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
             val jobRepositoryMock = mockk<JobRepository>()
@@ -172,7 +173,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
         }
 
         should("mark a job as failed if too many errors occurred") {
-            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, Clock.systemUTC(), Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
             val jobRepositoryMock = mockk<JobRepository>()
@@ -208,7 +209,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
         should("delay a job if runAt is specified") {
             val now = Instant.parse("2020-11-01T10:00:00.222222Z")
             val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
-            val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
             val jobRepositoryMock = mockk<JobRepository>()
@@ -239,7 +240,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
         should("run a job immediately if runAt is in the past") {
             val now = Instant.parse("2020-11-01T10:00:00.222222Z")
             val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
-            val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
             val jobRepositoryMock = mockk<JobRepository>()
@@ -266,7 +267,7 @@ class DefaultJobExecutorSpec : ShouldSpec() {
         should("not run a delayed task if this kjob instance does not own the job anymore") {
             val now = Instant.parse("2020-11-01T10:00:00.222222Z")
             val clock = MutableClock(Clock.fixed(now, ZoneId.of("UTC")))
-            val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined)
+            val testee = DefaultJobExecutor(kjobId, dispatchers, clock, Dispatchers.Unconfined, Json)
             val runnableJobMock = mockk<RunnableJob>()
             val sjMock = mockk<ScheduledJob>()
             val jobRepositoryMock = mockk<JobRepository>()
