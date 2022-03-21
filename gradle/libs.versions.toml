@@ -20,6 +20,8 @@ kotest = "5.2.1"
 cronutils = "9.1.6"
 
 ktorio = "2.0.0-beta-1"
+composejb = "1.1.1"
+kotlinjs_ext = "1.0.1-pre.320-kotlin-1.6.10"
 
 [plugins]
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -28,6 +30,7 @@ binaryCompat = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", ve
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+composejb = { id = "org.jetbrains.compose", version.ref = "composejb" }
 testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }
 
 [libraries]
@@ -56,11 +59,14 @@ embedMongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo", version
 mongodbReactive = { module = "org.mongodb:mongodb-driver-reactivestreams", version = "4.5.0" }
 rxjava = { module = "io.reactivex.rxjava2:rxkotlin", version = "2.4.0" }
 
+kotlinjs-extensions = { module = "org.jetbrains.kotlin-wrappers:kotlin-extensions", version.ref = "kotlinjs_ext" }
+
 ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorio" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorio" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorio" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorio" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktorio" }
 ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorio" }
 ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktorio" }
 

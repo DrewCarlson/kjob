@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.json.*
 import java.time.ZonedDateTime
-import java.util.*
 
 object KjobApiExtension : ExtensionId<KjobApiEx>
 
@@ -33,6 +32,7 @@ class KjobApiEx(
 ) : BaseExtension(KjobApiExtension) {
     class Configuration : BaseExtension.Configuration()
 
+    internal val isWorker = kjobConfig.isWorker
     private val jobStatuses by lazy { JobStatus.values().toSet() }
     internal val instanceId by lazy { kjob.id.toString() }
     private val cronParser by lazy {
@@ -55,6 +55,10 @@ class KjobApiEx(
                     jdbi.connectionString == otherJdbi.connectionString &&
                     jdbi.jobTableName == otherJdbi.jobTableName
         } else false
+    }
+
+    internal fun jobNames(): Set<String> {
+        return kjob.jobRegister().run { jobs(BLOCKING) + jobs(NON_BLOCKING) }
     }
 
     internal fun jobTypes(): List<JsonObject> {

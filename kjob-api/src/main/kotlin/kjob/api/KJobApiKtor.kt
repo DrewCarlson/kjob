@@ -8,7 +8,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kjob.core.KJob
 import kjob.core.job.JobStatus
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonObject
 
 fun Application.installKJobApi(
     kjobInstance: KJob,
@@ -46,17 +48,18 @@ private fun Route.installKJobApiRoutes(
     val jobStatuses = JobStatus.values().toList()
     val extensions = kjobInstances.map { it(KjobApiExtension) }
     val uniqueDatabaseExtensions = mutableListOf<KjobApiEx>()
-    extensions.forEach { extension ->
-        if (uniqueDatabaseExtensions.none(extension::shareDatabase)) {
-            uniqueDatabaseExtensions.add(extension)
+    extensions
+        .sortedByDescending(KjobApiEx::isWorker)
+        .forEach { extension ->
+            if (uniqueDatabaseExtensions.none(extension::shareDatabase)) {
+                uniqueDatabaseExtensions.add(extension)
+            }
         }
-    }
     route("/kjob") {
         get("/statuses") {
             call.respond(jobStatuses)
         }
         get("/stats") {
-            val filterNames = call.request.queryParameters["names"]?.split(",")?.toSet()
             val instanceId = call.parameters["instanceId"]
             if (instanceId != null && extensions.none { it.instanceId == instanceId }) {
                 return@get call.respond(NotFound)
@@ -67,16 +70,34 @@ private fun Route.installKJobApiRoutes(
                 extensions.filter { it.instanceId == instanceId }
             }
             val jobCounts = filteredExtensions.fold(emptyMap<JobStatus, Int>()) { acc, extension ->
-                extension.jobCounts(filterNames).mapValues { (status, count) ->
+                extension.jobCounts(null).mapValues { (status, count) ->
                     (acc[status] ?: 0) + count
                 }
             }
             call.respond(buildJsonObject {
-                put("workers", extensions.size)
-                putJsonObject("jobs") {
-                    put("total", jobCounts.map { (_, values) -> values }.sum())
+                put("instances", extensions.size)
+                putJsonObject("all") {
                     jobCounts.forEach { (status, jobCount) ->
-                        put(status.name.lowercase(), jobCount)
+                        put(status.name, jobCount)
+                    }
+                }
+                val names = filteredExtensions.flatMap { it.jobNames() }.toSet()
+                val counts = if (names.isNotEmpty()) {
+                    names.associateWith { name ->
+                        filteredExtensions.fold(emptyMap<JobStatus, Int>()) { acc, extension ->
+                            extension.jobCounts(setOf(name)).mapValues { (status, count) ->
+                                (acc[status] ?: 0) + count
+                            }
+                        }
+                    }
+                } else emptyMap()
+                putJsonObject("jobs") {
+                    names.forEach { name ->
+                        putJsonObject(name) {
+                            counts[name]?.forEach { (status, count) ->
+                                put(status.name, count)
+                            }
+                        }
                     }
                 }
             })

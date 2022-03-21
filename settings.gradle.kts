@@ -2,6 +2,7 @@ rootProject.name = "kjob"
 include(
     "kjob-core",
     "kjob-api",
+    "kjob-dashboard",
     "kjob-kron",
     "kjob-mongo",
     "kjob-inmem",

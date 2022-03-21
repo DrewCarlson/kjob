@@ -1,17 +1,25 @@
+import org.jetbrains.compose.compose
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
+
 @Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
 plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.testLogger)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.serialization) apply false
+    alias(libs.plugins.composejb) apply false
 }
 
 allprojects {
+    yarn.lockFileDirectory = rootDir.resolve("gradle/kotlin-js-store")
     repositories {
         mavenCentral()
     }
 }
 
 subprojects {
+    if (name == "kjob-dashboard") return@subprojects
     apply(plugin = "kotlin")
     apply(plugin = "com.adarshr.test-logger")
 
@@ -149,6 +157,58 @@ project(":kjob-kron") {
         testImplementation(project(path = ":kjob-core", configuration = "testArtifacts"))
 
         testRuntimeOnly(rootProject.libs.logback)
+    }
+}
+
+project(":kjob-dashboard") {
+    apply(plugin = "kotlin-multiplatform")
+    apply(plugin = "kotlinx-serialization")
+    apply(plugin = "org.jetbrains.compose")
+    extensions.getByType<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension>().apply {
+        js(IR) {
+            browser {
+                commonWebpackConfig {
+                    cssSupport.enabled = true
+                }
+                webpackTask {
+                    outputFileName = "kjob-dashboard.bundle.js"
+                }
+                runTask {
+                    outputFileName = "kjob-dashboard.bundle.js"
+                    devServer = KotlinWebpackConfig.DevServer(
+                        open = false,
+                        proxy = mutableMapOf(
+                            "/kjob/*" to mapOf<String, Any>(
+                                "target" to "http://localhost:9999",
+                                "ws" to false,
+                            )
+                        ),
+                        static = mutableListOf("$buildDir/processedResources/js/main")
+                    )
+                }
+            }
+            binaries.executable()
+        }
+        this.sourceSets {
+            val jsMain by getting {
+                dependencies {
+                    implementation(rootProject.libs.ktor.client.core)
+                    implementation(rootProject.libs.ktor.client.js)
+                    implementation(rootProject.libs.ktor.client.contentNegotiation)
+                    implementation(rootProject.libs.ktor.client.websockets)
+                    implementation(rootProject.libs.ktor.serialization)
+                    implementation(rootProject.libs.kotlinjs.extensions)
+                    implementation(rootProject.libs.datetime)
+                    implementation(compose.web.core)
+                    implementation(compose.runtime)
+                    implementation(devNpm("bootstrap", "5.1.3"))
+                    implementation(devNpm("bootstrap-icons", "1.8.1"))
+                    implementation(devNpm("@fontsource/open-sans", "4.5.0"))
+                    implementation(devNpm("@popperjs/core", "2.11.0"))
+                    implementation(devNpm("file-loader", "6.2.0"))
+                }
+            }
+        }
     }
 }
 

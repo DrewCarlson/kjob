@@ -27,37 +27,33 @@ object LogText : Job("log-text") {
     val text = string("text")
 }
 
-object PrintStuff : KronJob("print-stuff", "* * * ? * * *")
+object PrintStuff : KronJob("print-stuff", "* * */10 ? * * *")
 object PrintMoreStuff : KronJob("print-more-stuff", "*/10 * * ? * * *")
 
 suspend fun main() {
     val dbHandle = Jdbi.create("jdbc:sqlite::memory:").open()
 
-    val schedulerKjob = kjob(JdbiKJob) {
-        handle = dbHandle
-        isWorker = false
-        extension(KJobApiModule)
-    }.start()
-    val workerKjob = kjob(JdbiKJob) {
+    val kjob = kjob(JdbiKJob) {
         handle = dbHandle
         extension(KJobApiModule)
         extension(KronModule)
     }.start()
 
-    workerKjob(Kron).kron(PrintStuff) {
+    kjob(Kron).kron(PrintStuff) {
         maxRetries = 3
         execute {
             println("${Instant.now()}: executing kron task '${it.name}' with jobId '$jobId'")
         }
     }
 
-    workerKjob(Kron).kron(PrintMoreStuff) {
+    kjob(Kron).kron(PrintMoreStuff) {
         execute {
             println("${Instant.now()}: executing kron task '${it.name}' with jobId '$jobId'")
+            delay(2.seconds)
         }
     }
 
-    workerKjob.register(LogNumber) {
+    kjob.register(LogNumber) {
         maxRetries = 0
         execute {
             setInitialMax(5L)
@@ -71,7 +67,7 @@ suspend fun main() {
             }
         }
     }
-    workerKjob.register(LogText) {
+    kjob.register(LogText) {
         execute {
             setInitialMax(5L)
             println(props[it.text])
@@ -79,27 +75,26 @@ suspend fun main() {
                 error("Failed to finish job")
             }
             repeat(5) {
-                delay(30.seconds)
+                delay(1.seconds)
                 step()
             }
         }
     }
 
-    repeat(1_000) { i ->
-        schedulerKjob.schedule(LogNumber, Duration.ofSeconds(i.toLong())) {
+    repeat(25) { i ->
+        kjob.schedule(LogNumber, Duration.ofMinutes(i.toLong())) {
             props[it.number] = Random.nextInt()
         }
-        schedulerKjob.schedule(LogText, Duration.ofSeconds(i.toLong())) {
-            props[it.text] = Base64.getEncoder().encodeToString(Random.nextBytes(8))
-        }
     }
-    repeat(10) {
-        schedulerKjob.schedule(LogText, Duration.ofDays(500)) {
-            props[it.text] = Base64.getEncoder().encodeToString(Random.nextBytes(8))
+    repeat(5) { i ->
+        val delay = Duration.ofDays(i * 100L)
+        kjob.schedule(LogText, delay) {
+            jobId = "${delay.toDays()}-days"
+            props[it.text] = "$delay"
         }
     }
 
     embeddedServer(Netty, port = 9999) {
-        installKJobApi(listOf(schedulerKjob, workerKjob))
+        installKJobApi(kjob)
     }.start(wait = true)
 }
