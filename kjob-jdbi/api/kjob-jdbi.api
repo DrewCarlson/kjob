@@ -1,0 +1,29 @@
+public final class kjob/jdbi/JdbiKJob : kjob/core/BaseKJob {
+	public static final field Companion Lkjob/jdbi/JdbiKJob$Companion;
+	public fun <init> (Lkjob/jdbi/JdbiKJob$Configuration;)V
+	public fun getJobRepository ()Lkjob/core/repository/JobRepository;
+	public fun getLockRepository ()Lkjob/core/repository/LockRepository;
+	public fun shutdown ()V
+	public fun start ()Lkjob/core/KJob;
+}
+
+public final class kjob/jdbi/JdbiKJob$Companion : kjob/core/KJobFactory {
+	public fun create (Lkotlin/jvm/functions/Function1;)Lkjob/core/KJob;
+}
+
+public final class kjob/jdbi/JdbiKJob$Configuration : kjob/core/BaseKJob$Configuration {
+	public fun <init> ()V
+	public final fun getConnectionString ()Ljava/lang/String;
+	public final fun getExpireLockInMinutes ()J
+	public final fun getHandle ()Lorg/jdbi/v3/core/Handle;
+	public final fun getJdbi ()Lorg/jdbi/v3/core/Jdbi;
+	public final fun getJobTableName ()Ljava/lang/String;
+	public final fun getLockTableName ()Ljava/lang/String;
+	public final fun setConnectionString (Ljava/lang/String;)V
+	public final fun setExpireLockInMinutes (J)V
+	public final fun setHandle (Lorg/jdbi/v3/core/Handle;)V
+	public final fun setJdbi (Lorg/jdbi/v3/core/Jdbi;)V
+	public final fun setJobTableName (Ljava/lang/String;)V
+	public final fun setLockTableName (Ljava/lang/String;)V
+}
+

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.testLogger)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.binaryCompat) apply false
     alias(libs.plugins.serialization) apply false
 }
 
@@ -85,6 +86,7 @@ project(":kjob-example") {
 
 project(":kjob-mongo") {
     apply(from = "../gradle/publishing.gradle.kts")
+    apply(plugin = "binary-compatibility-validator")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.mongodbReactive)
@@ -103,6 +105,7 @@ project(":kjob-mongo") {
 
 project(":kjob-jdbi") {
     apply(from = "../gradle/publishing.gradle.kts")
+    apply(plugin = "binary-compatibility-validator")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.serialization.core)
@@ -122,6 +125,7 @@ project(":kjob-jdbi") {
 
 project(":kjob-inmem") {
     apply(from = "../gradle/publishing.gradle.kts")
+    apply(plugin = "binary-compatibility-validator")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.coroutines.core)
@@ -137,6 +141,7 @@ project(":kjob-inmem") {
 
 project(":kjob-kron") {
     apply(from = "../gradle/publishing.gradle.kts")
+    apply(plugin = "binary-compatibility-validator")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.coroutines.core)
@@ -157,6 +162,7 @@ project(":kjob-kron") {
 
 project(":kjob-api") {
     apply(from = "../gradle/publishing.gradle.kts")
+    apply(plugin = "binary-compatibility-validator")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(project(":kjob-mongo"))
@@ -188,6 +194,7 @@ project(":kjob-api") {
 project(":kjob-core") {
     apply(plugin = "kotlinx-serialization")
     apply(from = "../gradle/publishing.gradle.kts")
+    apply(plugin = "binary-compatibility-validator")
     dependencies {
         implementation(rootProject.libs.coroutines.core)
         implementation(rootProject.libs.serialization.core)

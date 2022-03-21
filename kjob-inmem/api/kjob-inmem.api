@@ -1,0 +1,17 @@
+public final class kjob/inmem/InMem : kjob/core/KJobFactory {
+	public static final field INSTANCE Lkjob/inmem/InMem;
+	public fun create (Lkotlin/jvm/functions/Function1;)Lkjob/core/KJob;
+}
+
+public final class kjob/inmem/InMemKJob : kjob/core/BaseKJob {
+	public fun <init> (Lkjob/inmem/InMemKJob$Configuration;)V
+	public fun getJobRepository ()Lkjob/core/repository/JobRepository;
+	public fun getLockRepository ()Lkjob/core/repository/LockRepository;
+}
+
+public final class kjob/inmem/InMemKJob$Configuration : kjob/core/BaseKJob$Configuration {
+	public fun <init> ()V
+	public final fun getExpireLockInMinutes ()J
+	public final fun setExpireLockInMinutes (J)V
+}
+

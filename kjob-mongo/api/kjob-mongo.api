@@ -1,0 +1,28 @@
+public final class kjob/mongo/Mongo : kjob/core/KJobFactory {
+	public static final field INSTANCE Lkjob/mongo/Mongo;
+	public fun create (Lkotlin/jvm/functions/Function1;)Lkjob/core/KJob;
+}
+
+public final class kjob/mongo/MongoKJob : kjob/core/BaseKJob {
+	public fun <init> (Lkjob/mongo/MongoKJob$Configuration;)V
+	public fun getJobRepository ()Lkjob/core/repository/JobRepository;
+	public fun getLockRepository ()Lkjob/core/repository/LockRepository;
+	public fun start ()Lkjob/core/KJob;
+}
+
+public final class kjob/mongo/MongoKJob$Configuration : kjob/core/BaseKJob$Configuration {
+	public fun <init> ()V
+	public final fun getClient ()Lcom/mongodb/reactivestreams/client/MongoClient;
+	public final fun getConnectionString ()Ljava/lang/String;
+	public final fun getDatabaseName ()Ljava/lang/String;
+	public final fun getExpireLockInMinutes ()J
+	public final fun getJobCollection ()Ljava/lang/String;
+	public final fun getLockCollection ()Ljava/lang/String;
+	public final fun setClient (Lcom/mongodb/reactivestreams/client/MongoClient;)V
+	public final fun setConnectionString (Ljava/lang/String;)V
+	public final fun setDatabaseName (Ljava/lang/String;)V
+	public final fun setExpireLockInMinutes (J)V
+	public final fun setJobCollection (Ljava/lang/String;)V
+	public final fun setLockCollection (Ljava/lang/String;)V
+}
+

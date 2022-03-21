@@ -1,0 +1,23 @@
+public final class kjob/kron/Kron : kjob/core/extension/ExtensionId {
+	public static final field INSTANCE Lkjob/kron/Kron;
+	public fun name ()Ljava/lang/String;
+}
+
+public final class kjob/kron/KronEx : kjob/core/extension/BaseExtension {
+	public fun <init> (Lkjob/kron/KronEx$Configuration;Lkjob/core/BaseKJob$Configuration;Lkjob/core/BaseKJob;)V
+	public final fun kron (Lkjob/core/KronJob;Lkotlin/jvm/functions/Function2;)V
+	public fun shutdown ()V
+	public fun start ()V
+}
+
+public final class kjob/kron/KronEx$Configuration : kjob/core/extension/BaseExtension$Configuration {
+	public fun <init> ()V
+}
+
+public final class kjob/kron/KronModule : kjob/core/extension/ExtensionModule {
+	public static final field INSTANCE Lkjob/kron/KronModule;
+	public fun create (Lkotlin/jvm/functions/Function1;Lkjob/core/BaseKJob$Configuration;)Lkotlin/jvm/functions/Function1;
+	public synthetic fun create (Lkotlin/jvm/functions/Function1;Lkjob/core/KJob$Configuration;)Lkotlin/jvm/functions/Function1;
+	public fun getId ()Lkjob/core/extension/ExtensionId;
+}
+

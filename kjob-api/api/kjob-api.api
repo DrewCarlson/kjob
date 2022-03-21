@@ -1,0 +1,27 @@
+public final class kjob/api/KJobApiKtorKt {
+	public static final fun installKJobApi (Lio/ktor/server/application/Application;Ljava/util/List;Lio/ktor/server/routing/Route;Z)V
+	public static final fun installKJobApi (Lio/ktor/server/application/Application;Lkjob/core/KJob;Lio/ktor/server/routing/Route;Z)V
+	public static synthetic fun installKJobApi$default (Lio/ktor/server/application/Application;Ljava/util/List;Lio/ktor/server/routing/Route;ZILjava/lang/Object;)V
+	public static synthetic fun installKJobApi$default (Lio/ktor/server/application/Application;Lkjob/core/KJob;Lio/ktor/server/routing/Route;ZILjava/lang/Object;)V
+}
+
+public final class kjob/api/KJobApiModule : kjob/core/extension/ExtensionModule {
+	public static final field INSTANCE Lkjob/api/KJobApiModule;
+	public fun create (Lkotlin/jvm/functions/Function1;Lkjob/core/BaseKJob$Configuration;)Lkotlin/jvm/functions/Function1;
+	public synthetic fun create (Lkotlin/jvm/functions/Function1;Lkjob/core/KJob$Configuration;)Lkotlin/jvm/functions/Function1;
+	public fun getId ()Lkjob/core/extension/ExtensionId;
+}
+
+public final class kjob/api/KjobApiEx : kjob/core/extension/BaseExtension {
+	public fun <init> (Lkjob/api/KjobApiEx$Configuration;Lkjob/core/BaseKJob$Configuration;Lkjob/core/BaseKJob;)V
+}
+
+public final class kjob/api/KjobApiEx$Configuration : kjob/core/extension/BaseExtension$Configuration {
+	public fun <init> ()V
+}
+
+public final class kjob/api/KjobApiExtension : kjob/core/extension/ExtensionId {
+	public static final field INSTANCE Lkjob/api/KjobApiExtension;
+	public fun name ()Ljava/lang/String;
+}
+
