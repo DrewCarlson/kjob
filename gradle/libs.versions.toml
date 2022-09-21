@@ -45,7 +45,7 @@ jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
 jdbi-sqlite = { module = "org.jdbi:jdbi3-sqlite", version.ref = "jdbi" }
 jdbc-sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "jdbc_sqlite" }
 
-slf4j = { module = "org.slf4j:slf4j-api", version = "1.7.36" }
+slf4j = { module = "org.slf4j:slf4j-api", version = "2.0.2" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
