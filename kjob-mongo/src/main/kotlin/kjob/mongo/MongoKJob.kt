@@ -17,8 +17,9 @@ import java.time.Clock
 class MongoKJob(config: Configuration) : BaseKJob<MongoKJob.Configuration>(config) {
 
     init {
-        if (config.expireLockInMinutes * 60 <= config.keepAliveExecutionPeriodInSeconds)
+        if (config.expireLockInMinutes * 60 <= config.keepAliveExecutionPeriodInSeconds) {
             error("The lock expires before a new 'keep alive' has been scheduled. That will not work.")
+        }
     }
 
     class Configuration : BaseKJob.Configuration() {
@@ -58,23 +59,24 @@ class MongoKJob(config: Configuration) : BaseKJob<MongoKJob.Configuration>(confi
     private val client = config.client ?: buildClient()
 
     private fun buildClient(): MongoClient =
-            MongoClients.create(MongoClientSettings
-                    .builder()
-                    .applyConnectionString(ConnectionString(config.connectionString))
-                    .uuidRepresentation(UuidRepresentation.STANDARD)
-                    .build())
-
+        MongoClients.create(
+            MongoClientSettings
+                .builder()
+                .applyConnectionString(ConnectionString(config.connectionString))
+                .uuidRepresentation(UuidRepresentation.STANDARD)
+                .build()
+        )
 
     override val jobRepository: JobRepository = MongoJobRepository(
-            client,
-            config,
-            Clock.systemUTC()
+        client,
+        config,
+        Clock.systemUTC()
     )
 
     override val lockRepository: LockRepository = MongoLockRepository(
-            client,
-            config,
-            Clock.systemUTC()
+        client,
+        config,
+        Clock.systemUTC()
     )
 
     override fun start(): KJob = runBlocking {

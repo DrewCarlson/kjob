@@ -46,15 +46,17 @@ class KjobApiEx(
         val otherJdbi = (other.kjobConfig as? JdbiKJob.Configuration)
         return if (mongo != null && otherMongo != null) {
             mongo.databaseName == otherMongo.databaseName &&
-                    mongo.jobCollection == otherMongo.jobCollection &&
-                    mongo.connectionString == otherMongo.connectionString &&
-                    mongo.client == otherMongo.client
+                mongo.jobCollection == otherMongo.jobCollection &&
+                mongo.connectionString == otherMongo.connectionString &&
+                mongo.client == otherMongo.client
         } else if (jdbi != null && otherJdbi != null) {
             jdbi.handle == otherJdbi.handle &&
-                    jdbi.jdbi == otherJdbi.jdbi &&
-                    jdbi.connectionString == otherJdbi.connectionString &&
-                    jdbi.jobTableName == otherJdbi.jobTableName
-        } else false
+                jdbi.jdbi == otherJdbi.jdbi &&
+                jdbi.connectionString == otherJdbi.connectionString &&
+                jdbi.jobTableName == otherJdbi.jobTableName
+        } else {
+            false
+        }
     }
 
     internal fun jobTypes(): List<JsonObject> {
@@ -71,7 +73,7 @@ class KjobApiEx(
                 (runnableJob.job as? KronJob)?.also { kron ->
                     putJsonObject("kron") {
                         val cron = cronParser.parse(kron.cronExpression)
-                        val executionTime =  ExecutionTime.forCron(cron)
+                        val executionTime = ExecutionTime.forCron(cron)
                         put("expression", kron.cronExpression)
                         putJsonObject("executionTime") {
                             val now = ZonedDateTime.now(kjob.clock)
@@ -120,7 +122,7 @@ class KjobApiEx(
     internal suspend fun jobs(
         names: Set<String>?,
         statuses: Set<JobStatus>?,
-        limit: Int?,
+        limit: Int?
     ): List<JsonObject> {
         return kjob.jobRepository
             .findNext(names ?: emptySet(), statuses ?: jobStatuses, limit ?: Int.MAX_VALUE)
@@ -193,30 +195,32 @@ class KjobApiEx(
     }
 
     private fun Map<String, Any>.toJsonObject(): JsonObject {
-        return JsonObject(mapValues { (_, value) ->
-            when (value) {
-                is Number -> JsonPrimitive(value)
-                is String -> JsonPrimitive(value)
-                is Boolean -> JsonPrimitive(value)
-                is List<*> -> {
-                    if (value.isEmpty()) {
-                        JsonArray(emptyList())
-                    } else {
-                        val first = value.first()
-                        @Suppress("UNCHECKED_CAST")
-                        JsonArray(
-                            when (first) {
-                                is Number -> (value as List<Number>).map(::JsonPrimitive)
-                                is String -> (value as List<String>).map(::JsonPrimitive)
-                                is Boolean -> (value as List<Boolean>).map(::JsonPrimitive)
-                                else -> emptyList()
-                            }
-                        )
+        return JsonObject(
+            mapValues { (_, value) ->
+                when (value) {
+                    is Number -> JsonPrimitive(value)
+                    is String -> JsonPrimitive(value)
+                    is Boolean -> JsonPrimitive(value)
+                    is List<*> -> {
+                        if (value.isEmpty()) {
+                            JsonArray(emptyList())
+                        } else {
+                            val first = value.first()
+                            @Suppress("UNCHECKED_CAST")
+                            JsonArray(
+                                when (first) {
+                                    is Number -> (value as List<Number>).map(::JsonPrimitive)
+                                    is String -> (value as List<String>).map(::JsonPrimitive)
+                                    is Boolean -> (value as List<Boolean>).map(::JsonPrimitive)
+                                    else -> emptyList()
+                                }
+                            )
+                        }
                     }
+                    else -> JsonNull
                 }
-                else -> JsonNull
             }
-        })
+        )
     }
 }
 

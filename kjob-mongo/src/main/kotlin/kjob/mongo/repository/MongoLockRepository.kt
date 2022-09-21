@@ -3,9 +3,9 @@ package kjob.mongo.repository
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.reactivestreams.client.MongoClient
-import kjob.mongo.MongoKJob
 import kjob.core.job.Lock
 import kjob.core.repository.LockRepository
+import kjob.mongo.MongoKJob
 import kjob.mongo.repository.structure.LockStructure
 import kotlinx.coroutines.reactive.awaitSingle
 import org.bson.Document
@@ -21,8 +21,8 @@ internal class MongoLockRepository(
 ) : MongoRepository<UUID, Lock>(mongoClient.getDatabase(conf.databaseName).getCollection(conf.lockCollection)),
     LockRepository {
 
-    constructor(mongoClient: MongoClient, clock: Clock, conf: MongoKJob.Configuration.() -> Unit)
-            : this(mongoClient, MongoKJob.Configuration().apply(conf), clock)
+    constructor(mongoClient: MongoClient, clock: Clock, conf: MongoKJob.Configuration.() -> Unit) :
+        this(mongoClient, MongoKJob.Configuration().apply(conf), clock)
 
     override suspend fun ensureIndexes() {
         val options = IndexOptions().name("updated_at_ttl").background(true).expireAfter(conf.expireLockInMinutes, TimeUnit.MINUTES)
@@ -30,15 +30,15 @@ internal class MongoLockRepository(
     }
 
     override fun encode(value: Lock): Document =
-            Document()
-                    .append(LockStructure.ID.key, value.id)
-                    .append(LockStructure.UPDATED_AT.key, value.updatedAt)
-
+        Document()
+            .append(LockStructure.ID.key, value.id)
+            .append(LockStructure.UPDATED_AT.key, value.updatedAt)
 
     override fun decode(document: Document): Lock =
-            Lock(
-                    document.get(LockStructure.ID.key, UUID::class.java),
-                    document.getDate(LockStructure.UPDATED_AT.key).toInstant())
+        Lock(
+            document.get(LockStructure.ID.key, UUID::class.java),
+            document.getDate(LockStructure.UPDATED_AT.key).toInstant()
+        )
 
     override fun keyOf(value: Lock): UUID = value.id
 

@@ -21,7 +21,7 @@ class MongoRepositorySpec : ShouldSpec() {
     private var clock = Clock.fixed(Instant.parse("2020-02-22T22:22:22.222Z"), ZoneId.of("UTC"))
 
     private fun create(value: Int): Counter =
-            Counter(ObjectId.get().toHexString(), value, now(clock))
+        Counter(ObjectId.get().toHexString(), value, now(clock))
 
     data class Counter(val id: String, val value: Int, val updatedAt: Instant)
 
@@ -30,13 +30,13 @@ class MongoRepositorySpec : ShouldSpec() {
     private val testee: MongoRepository<String, Counter> = object : MongoRepository<String, Counter>(mongoClient.getDatabase(databaseName).getCollection("counter")) {
 
         override fun encode(value: Counter): Document =
-                Document()
-                        .append("_id", value.id)
-                        .append("value", value.value)
-                        .append("updated_at", value.updatedAt)
+            Document()
+                .append("_id", value.id)
+                .append("value", value.value)
+                .append("updated_at", value.updatedAt)
 
         override fun decode(document: Document): Counter =
-                Counter(document.getString("_id"), document.getInteger("value"), document.getDate("updated_at").toInstant())
+            Counter(document.getString("_id"), document.getInteger("value"), document.getDate("updated_at").toInstant())
 
         override fun keyOf(value: Counter): String = value.id
     }
@@ -100,8 +100,5 @@ class MongoRepositorySpec : ShouldSpec() {
             testee.update(randomCounter) shouldBe false
             testee.findOne(randomCounter.id) shouldBe null
         }
-
-
     }
-
 }

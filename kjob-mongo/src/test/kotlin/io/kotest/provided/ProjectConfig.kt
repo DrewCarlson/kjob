@@ -27,10 +27,12 @@ object ProjectConfig : AbstractProjectConfig() {
         val runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, logger).build()
 
         val starter = MongodStarter.getInstance(runtimeConfig)
-        val exe = starter.prepare(MongodConfig.builder()
+        val exe = starter.prepare(
+            MongodConfig.builder()
                 .version(Version.Main.PRODUCTION)
                 .net(Net(host, port, Network.localhostIsIPv6()))
-                .build())
+                .build()
+        )
 
         val mongod = exe.start()
         exe to mongod

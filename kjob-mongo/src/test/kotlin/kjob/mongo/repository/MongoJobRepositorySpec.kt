@@ -35,16 +35,14 @@ class MongoJobRepositorySpec : JobRepositoryContract() {
 
         should("ensure index") {
             val unique = mongoClient
-                    .getDatabase(mongoTestee.conf.databaseName)
-                    .getCollection(mongoTestee.conf.jobCollection)
-                    .listIndexes()
-                    .asFlow()
-                    .first { it.getString("name") == "unique_job_id" }
+                .getDatabase(mongoTestee.conf.databaseName)
+                .getCollection(mongoTestee.conf.jobCollection)
+                .listIndexes()
+                .asFlow()
+                .first { it.getString("name") == "unique_job_id" }
             unique.getBoolean("unique") shouldBe true
             val expectedKey = Document().append("${ScheduledJobStructure.SETTINGS.key}.${JobSettingsStructure.ID.key}", 1)
             unique.get("key", Document::javaClass) shouldBe expectedKey
         }
-
     }
-
 }

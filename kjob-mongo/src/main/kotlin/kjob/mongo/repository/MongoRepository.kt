@@ -41,5 +41,5 @@ internal abstract class MongoRepository<K, V>(protected val collection: MongoCol
     internal suspend fun size(): Long = collection.countDocuments().awaitSingle()
 
     suspend fun update(value: V): Boolean =
-            collection.replaceOne(byId(keyOf(value)), encode(value)).awaitSingle().modifiedCount == 1L
+        collection.replaceOne(byId(keyOf(value)), encode(value)).awaitSingle().modifiedCount == 1L
 }

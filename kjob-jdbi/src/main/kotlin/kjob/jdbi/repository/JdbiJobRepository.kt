@@ -22,11 +22,11 @@ import java.util.*
 internal class JdbiJobRepository(
     private val handleProvider: () -> Handle,
     config: JdbiKJob.Configuration,
-    private val clock: Clock,
+    private val clock: Clock
 ) : JobRepository {
 
-    constructor(handle: Handle, clock: Clock, conf: JdbiKJob.Configuration.() -> Unit)
-            : this({ handle }, JdbiKJob.Configuration().apply(conf), clock)
+    constructor(handle: Handle, clock: Clock, conf: JdbiKJob.Configuration.() -> Unit) :
+        this({ handle }, JdbiKJob.Configuration().apply(conf), clock)
 
     private val jobTable = config.jobTableName
 
@@ -54,7 +54,7 @@ internal class JdbiJobRepository(
             """.trimIndent()
         )
         check(result == 0 || result == 1) {
-            "Failed to create job table with name '${jobTable}': result == $result"
+            "Failed to create job table with name '$jobTable': result == $result"
         }
     }
 
@@ -158,7 +158,9 @@ internal class JdbiJobRepository(
             .run {
                 if (oldKjobId != null) {
                     bind("oldKjobId", oldKjobId.toString())
-                } else this
+                } else {
+                    this
+                }
             }
             .execute() == 1
     }
@@ -230,37 +232,39 @@ internal class JdbiJobRepository(
     @Suppress("UNCHECKED_CAST")
     private fun Map<String, Any>.stringify(): String? {
         if (isEmpty()) return null
-        val jsonObject = JsonObject(mapValues { (_, value) ->
-            when (value) {
-                is List<*> -> {
-                    if (value.isEmpty()) {
-                        buildJsonObject {
-                            put("t", "s")
-                            putJsonArray("v") {}
-                        }
-                    } else {
-                        val (t, values) = when (val item = value.first()) {
-                            is Double -> "d" to (value as List<Double>).map(::JsonPrimitive)
-                            is Long -> "l" to (value as List<Long>).map(::JsonPrimitive)
-                            is Int -> "i" to (value as List<Int>).map(::JsonPrimitive)
-                            is String -> "s" to (value as List<String>).map(::JsonPrimitive)
-                            is Boolean -> "b" to (value as List<Boolean>).map(::JsonPrimitive)
-                            else -> error("Cannot serialize unsupported list property value: $item")
-                        }
-                        buildJsonObject {
-                            put("t", t)
-                            put("v", JsonArray(values))
+        val jsonObject = JsonObject(
+            mapValues { (_, value) ->
+                when (value) {
+                    is List<*> -> {
+                        if (value.isEmpty()) {
+                            buildJsonObject {
+                                put("t", "s")
+                                putJsonArray("v") {}
+                            }
+                        } else {
+                            val (t, values) = when (val item = value.first()) {
+                                is Double -> "d" to (value as List<Double>).map(::JsonPrimitive)
+                                is Long -> "l" to (value as List<Long>).map(::JsonPrimitive)
+                                is Int -> "i" to (value as List<Int>).map(::JsonPrimitive)
+                                is String -> "s" to (value as List<String>).map(::JsonPrimitive)
+                                is Boolean -> "b" to (value as List<Boolean>).map(::JsonPrimitive)
+                                else -> error("Cannot serialize unsupported list property value: $item")
+                            }
+                            buildJsonObject {
+                                put("t", t)
+                                put("v", JsonArray(values))
+                            }
                         }
                     }
+                    is Double -> JsonPrimitive("d:$value")
+                    is Long -> JsonPrimitive("l:$value")
+                    is Int -> JsonPrimitive("i:$value")
+                    is String -> JsonPrimitive("s:$value")
+                    is Boolean -> JsonPrimitive("b:$value")
+                    else -> error("Cannot serialize unsupported property value: $value")
                 }
-                is Double -> JsonPrimitive("d:$value")
-                is Long -> JsonPrimitive("l:$value")
-                is Int -> JsonPrimitive("i:$value")
-                is String -> JsonPrimitive("s:$value")
-                is Boolean -> JsonPrimitive("b:$value")
-                else -> error("Cannot serialize unsupported property value: $value")
             }
-        })
+        )
         return Json.encodeToString(jsonObject)
     }
 
@@ -277,7 +281,7 @@ internal class JdbiJobRepository(
             settings = JobSettings(
                 id = getColumn("jobId", String::class.java),
                 name = getColumn("name", String::class.java),
-                properties = getColumn("properties", String::class.java)?.parseJsonMap() ?: emptyMap(),
+                properties = getColumn("properties", String::class.java)?.parseJsonMap() ?: emptyMap()
             ),
             progress = JobProgress(
                 step = getColumn("step", Long::class.javaObjectType),

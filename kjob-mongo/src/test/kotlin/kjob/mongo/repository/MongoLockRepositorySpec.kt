@@ -29,11 +29,11 @@ class MongoLockRepositorySpec : LockRepositoryContract() {
         }
         should("return applied ttl") {
             val ttlIndex = mongoClient
-                    .getDatabase(mongoTestee.conf.databaseName)
-                    .getCollection(mongoTestee.conf.lockCollection)
-                    .listIndexes()
-                    .asFlow()
-                    .first { it.getString("name") == "updated_at_ttl" }
+                .getDatabase(mongoTestee.conf.databaseName)
+                .getCollection(mongoTestee.conf.lockCollection)
+                .listIndexes()
+                .asFlow()
+                .first { it.getString("name") == "updated_at_ttl" }
             ttlIndex.getLong("expireAfterSeconds") shouldBe 300
         }
     }

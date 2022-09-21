@@ -12,11 +12,11 @@ import kotlin.time.Duration.Companion.minutes
 internal class JdbiLockRepository(
     private val handleProvider: () -> Handle,
     config: JdbiKJob.Configuration,
-    private val clock: Clock,
+    private val clock: Clock
 ) : LockRepository {
 
-    constructor(handle: Handle, clock: Clock, conf: JdbiKJob.Configuration.() -> Unit)
-            : this({ handle }, JdbiKJob.Configuration().apply(conf), clock)
+    constructor(handle: Handle, clock: Clock, conf: JdbiKJob.Configuration.() -> Unit) :
+        this({ handle }, JdbiKJob.Configuration().apply(conf), clock)
 
     private val lockTable = config.lockTableName
     private val ttl = config.expireLockInMinutes.minutes

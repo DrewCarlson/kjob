@@ -15,7 +15,7 @@ Forked from [justwrote/kjob](https://github.com/justwrote/kjob).
 * Supports multiple instances
 * Failed job rescheduling
 * Configurable pools for blocking and non-blocking jobs
-* [Ktor](https://ktor.io) powered [Json REST APi](#Json-REST-API)
+* [Ktor](https://ktor.io) powered [Json REST API](#Json-REST-API)
 * Custom [extensions](#extensions) API
 
 ## Installation

@@ -13,7 +13,7 @@ import kotlinx.serialization.json.*
 fun Application.installKJobApi(
     kjobInstance: KJob,
     rootRoute: Route? = null,
-    installSerialization: Boolean = true,
+    installSerialization: Boolean = true
 ) {
     installKJobApi(
         listOf(kjobInstance),
@@ -25,7 +25,7 @@ fun Application.installKJobApi(
 fun Application.installKJobApi(
     kjobInstances: List<KJob>,
     rootRoute: Route? = null,
-    installSerialization: Boolean = true,
+    installSerialization: Boolean = true
 ) {
     if (installSerialization) {
         install(ContentNegotiation) {
@@ -41,7 +41,7 @@ fun Application.installKJobApi(
 }
 
 private fun Route.installKJobApiRoutes(
-    kjobInstances: List<KJob>,
+    kjobInstances: List<KJob>
 ) {
     val jobStatuses = JobStatus.values().toList()
     val extensions = kjobInstances.map { it(KjobApiExtension) }
@@ -71,15 +71,17 @@ private fun Route.installKJobApiRoutes(
                     (acc[status] ?: 0) + count
                 }
             }
-            call.respond(buildJsonObject {
-                put("workers", extensions.size)
-                putJsonObject("jobs") {
-                    put("total", jobCounts.map { (_, values) -> values }.sum())
-                    jobCounts.forEach { (status, jobCount) ->
-                        put(status.name.lowercase(), jobCount)
+            call.respond(
+                buildJsonObject {
+                    put("workers", extensions.size)
+                    putJsonObject("jobs") {
+                        put("total", jobCounts.map { (_, values) -> values }.sum())
+                        jobCounts.forEach { (status, jobCount) ->
+                            put(status.name.lowercase(), jobCount)
+                        }
                     }
                 }
-            })
+            )
         }
         get("/job-types") {
             call.respond(extensions.flatMap(KjobApiEx::jobTypes))
@@ -92,9 +94,11 @@ private fun Route.installKJobApiRoutes(
                     ?.split(",")
                     ?.mapNotNull { runCatching { JobStatus.valueOf(it) }.getOrNull() }
                     ?.toSet()
-                call.respond(uniqueDatabaseExtensions.flatMap { extension ->
-                    extension.jobs(filterNames, filterStatuses, limit)
-                })
+                call.respond(
+                    uniqueDatabaseExtensions.flatMap { extension ->
+                        extension.jobs(filterNames, filterStatuses, limit)
+                    }
+                )
             }
             get("/{id}") {
                 val id = call.parameters["id"]

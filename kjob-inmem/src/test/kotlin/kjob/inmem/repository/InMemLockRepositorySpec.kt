@@ -28,5 +28,4 @@ class InMemLockRepositorySpec : LockRepositoryContract() {
             testee.exists(id) shouldBe false
         }
     }
-
 }

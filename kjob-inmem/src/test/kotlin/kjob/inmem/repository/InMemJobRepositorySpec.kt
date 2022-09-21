@@ -27,7 +27,5 @@ class InMemJobRepositorySpec : JobRepositoryContract() {
                 testee.save(job, null)
             }
         }
-
     }
-
 }

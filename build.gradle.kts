@@ -1,8 +1,10 @@
-@Suppress("DSL_SCOPE_VIOLATION", "UnstableApiUsage")
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.jvm)
     alias(libs.plugins.testLogger)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kover)
     alias(libs.plugins.binaryCompat) apply false
     alias(libs.plugins.serialization) apply false
 }
@@ -16,6 +18,8 @@ allprojects {
 subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "com.adarshr.test-logger")
+    apply(plugin = "com.diffplug.spotless")
+    apply(plugin = "org.jetbrains.kotlinx.kover")
 
     kotlin {
         target {
@@ -57,7 +61,18 @@ subprojects {
     artifacts {
         add("testArtifacts", testJar)
     }
+
+    kover {}
+    configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+        kotlin {
+            //target("**/**.kt")
+            //ktlint(libs.versions.ktlint.get())
+            //    .editorConfigOverride(mapOf("disabled_rules" to "no-wildcard-imports,no-unused-imports"))
+        }
+    }
 }
+
+koverMerged { enable() }
 
 project(":kjob-example") {
     apply(plugin = "kotlinx-serialization")

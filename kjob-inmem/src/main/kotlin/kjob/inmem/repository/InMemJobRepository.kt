@@ -38,11 +38,11 @@ internal class InMemJobRepository(private val clock: Clock) : JobRepository {
             false
         } else {
             val newJe = sj.copy(
-                    kjobId = kjobId,
-                    status = status,
-                    statusMessage = statusMessage,
-                    retries = retries,
-                    updatedAt = Instant.now(clock)
+                kjobId = kjobId,
+                status = status,
+                statusMessage = statusMessage,
+                retries = retries,
+                updatedAt = Instant.now(clock)
             )
             map[id] = newJe
             true
@@ -55,11 +55,11 @@ internal class InMemJobRepository(private val clock: Clock) : JobRepository {
             false
         } else {
             val newJe = sj.copy(
-                    status = JobStatus.CREATED,
-                    statusMessage = null,
-                    kjobId = null,
-                    updatedAt = Instant.now(clock),
-                    progress = JobProgress(0)
+                status = JobStatus.CREATED,
+                statusMessage = null,
+                kjobId = null,
+                updatedAt = Instant.now(clock),
+                progress = JobProgress(0)
             )
             map[id] = newJe
             true
@@ -72,8 +72,8 @@ internal class InMemJobRepository(private val clock: Clock) : JobRepository {
             false
         } else {
             map[id] = sj.copy(
-                    updatedAt = Instant.now(clock),
-                    progress = sj.progress.copy(startedAt = Instant.now(clock))
+                updatedAt = Instant.now(clock),
+                progress = sj.progress.copy(startedAt = Instant.now(clock))
             )
             true
         }
@@ -85,8 +85,8 @@ internal class InMemJobRepository(private val clock: Clock) : JobRepository {
             false
         } else {
             map[id] = sj.copy(
-                    updatedAt = Instant.now(clock),
-                    progress = sj.progress.copy(completedAt = Instant.now(clock))
+                updatedAt = Instant.now(clock),
+                progress = sj.progress.copy(completedAt = Instant.now(clock))
             )
             true
         }
@@ -98,8 +98,8 @@ internal class InMemJobRepository(private val clock: Clock) : JobRepository {
             false
         } else {
             map[id] = sj.copy(
-                    updatedAt = Instant.now(clock),
-                    progress = sj.progress.copy(step = sj.progress.step + step)
+                updatedAt = Instant.now(clock),
+                progress = sj.progress.copy(step = sj.progress.step + step)
             )
             true
         }
@@ -111,8 +111,8 @@ internal class InMemJobRepository(private val clock: Clock) : JobRepository {
             false
         } else {
             map[id] = sj.copy(
-                    updatedAt = Instant.now(clock),
-                    progress = sj.progress.copy(max = max)
+                updatedAt = Instant.now(clock),
+                progress = sj.progress.copy(max = max)
             )
             true
         }

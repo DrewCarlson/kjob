@@ -11,12 +11,12 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import java.time.Clock
 
-
 class JdbiKJob(config: Configuration) : BaseKJob<JdbiKJob.Configuration>(config) {
 
     init {
-        if (config.expireLockInMinutes * 60 <= config.keepAliveExecutionPeriodInSeconds)
+        if (config.expireLockInMinutes * 60 <= config.keepAliveExecutionPeriodInSeconds) {
             error("The lock expires before a new 'keep alive' has been scheduled. That will not work.")
+        }
     }
 
     companion object : KJobFactory<JdbiKJob, Configuration> {
