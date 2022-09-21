@@ -2,6 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.drewcarlson/kjob-core?label=maven&color=blue)](https://search.maven.org/search?q=g:org.drewcarlson%20a:kjob-*)
 [![GitHub Build Status](https://img.shields.io/github/workflow/status/DrewCarlson/kjob/Tests/main?style=flat)](https://github.com/DrewCarlson/kjob/actions?query=workflow%3ATests)
+[![Codecov](https://img.shields.io/codecov/c/github/drewcarlson/kjob?token=K2AQ604LY9)](https://codecov.io/gh/DrewCarlson/kjob)
 
 A coroutine based Job scheduler for Kotlin. Requires Java 11+.
 
