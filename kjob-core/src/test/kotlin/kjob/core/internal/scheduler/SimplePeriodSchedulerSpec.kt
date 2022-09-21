@@ -4,13 +4,19 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import kjob.core.utils.waitSomeTime
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ScheduledExecutorService
 
 class SimplePeriodSchedulerSpec : ShouldSpec() {
 
-    class Flaky(var successLatch: CountDownLatch = CountDownLatch(0), var errorLatch: CountDownLatch = CountDownLatch(0), var isFlaky: Boolean = false) {
+    class Flaky(
+        var successLatch: CountDownLatch = CountDownLatch(0),
+        var errorLatch: CountDownLatch = CountDownLatch(0),
+        var isFlaky: Boolean = false
+    ) {
         fun run() {
             Thread.sleep(10)
             if (isFlaky) {
@@ -30,7 +36,10 @@ class SimplePeriodSchedulerSpec : ShouldSpec() {
         }
     }
 
-    private fun newTestee(flaky: Flaky, scheduler: ScheduledExecutorService) = object : SimplePeriodScheduler(scheduler, 30) {
+    private fun newTestee(
+        flaky: Flaky,
+        scheduler: ScheduledExecutorService
+    ) = object : SimplePeriodScheduler(scheduler, 30) {
         fun start() = run { flaky.run() }
     }
 
@@ -57,16 +66,15 @@ class SimplePeriodSchedulerSpec : ShouldSpec() {
             flaky.successLatch.waitSomeTime() shouldBe true
         }
 
-        // TODO: Consistently fails, needs investigation
-        xshould("not execute further jobs after shutdown") {
+        should("not execute further jobs after shutdown") {
             val flaky = Flaky(CountDownLatch(5))
             val testee = newTestee(flaky, newScheduler())
 
             testee.start()
-            delay(100)
+            withContext(Dispatchers.Default) { delay(100) }
             testee.shutdown()
             flaky.successLatch = CountDownLatch(1)
-            flaky.successLatch.waitSomeTime(1000) shouldBe false
+            flaky.successLatch.waitSomeTime(500) shouldBe false
         }
     }
 }
