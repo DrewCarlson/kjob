@@ -1,4 +1,5 @@
 import java.net.URL
+import java.net.HttpURLConnection
 import java.util.Base64
 
 apply(plugin = "maven-publish")
@@ -10,6 +11,8 @@ System.getenv("GITHUB_REF")?.let { ref ->
         version = ref.substringAfterLast("refs/tags/v")
     }
 }
+
+val isSnapshot by lazy { version.toString().endsWith("SNAPSHOT") }
 
 val mavenUrl: String by extra
 val mavenSnapshotUrl: String by extra
@@ -32,32 +35,20 @@ task<Jar>("javadocJar") {
 }
 
 val repositoryId by lazy {
-    if (!gradle.startParameter.taskNames.contains("publish")) return@lazy ""
+    val hasPublishingTask = gradle.startParameter.taskNames.any {
+        it == "publish" || (it.startsWith("publish") && it.contains("MavenRepository"))
+    }
+    if (!hasPublishingTask || isSnapshot) return@lazy ""
     if (!rootProject.extra.has("publishRepositoryId")) {
-        val id = URL("${mavenUrl}profiles/$sonatypeStagingProfile/start").openConnection().run {
-            doOutput = true
-            val auth = Base64.getEncoder().encode("$sonatypeUsername:$sonatypePassword".toByteArray())
-            setRequestProperty("Authorization", "Basic ${auth.decodeToString()}")
-            setRequestProperty("Content-Type", "application/xml")
-            getOutputStream().write(
-                """
-                <promoteRequest>
-                    <data>
-                        <description>Repository for ${version}</description>
-                    </data>
-                </promoteRequest>
-                """.trimIndent().toByteArray()
-            )
-            connect()
-            getInputStream()
-                .readBytes()
-                .decodeToString()
-                .substringAfter("<stagedRepositoryId>")
-                .substringBefore("</stagedRepositoryId>")
-        }
+        val id = makeRequest("start", "{ description: \"${rootProject.name} v${version}\" }")
+            .substringAfter("stagedRepositoryId\":\"").substringBefore('"')
         rootProject.extra.set("publishRepositoryId", id)
     }
     rootProject.extra.get("publishRepositoryId")
+}
+
+task("closeRepository") {
+    //doLast { makeRequest("finish", "{ stagedRepositoryId: \"${repositoryId}\" }") }
 }
 
 configure<PublishingExtension> {
@@ -98,7 +89,7 @@ configure<PublishingExtension> {
     }
     repositories {
         maven {
-            url = if (version.toString().endsWith("SNAPSHOT")) {
+            url = if (isSnapshot) {
                 uri(mavenSnapshotUrl)
             } else {
                 uri("${mavenUrl}deployByRepositoryId/$repositoryId")
@@ -111,8 +102,27 @@ configure<PublishingExtension> {
     }
 }
 
+if (!isSnapshot) {
+    tasks.named("publish") { finalizedBy("closeRepository") }
+}
+
 configure<SigningExtension> {
-    isRequired = !version.toString().endsWith("SNAPSHOT")
+    isRequired = !isSnapshot
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign((extensions["publishing"] as PublishingExtension).publications)
+}
+
+fun makeRequest(path: String, data: String? = null): String {
+    val auth = Base64.getEncoder().encode("$sonatypeUsername:$sonatypePassword".toByteArray())
+    return (URL("${mavenUrl}profiles/$sonatypeStagingProfile/${path}").openConnection() as HttpURLConnection).run {
+        setRequestProperty("Authorization", "Basic ${auth.decodeToString()}")
+        if (data != null) {
+            doOutput = true
+            setRequestProperty("Content-Type", "application/json")
+            getOutputStream().write("{ data: $data }".toByteArray())
+        }
+        connect()
+        val stream = runCatching { getInputStream() }.getOrNull() ?: getErrorStream()
+        checkNotNull(stream?.readBytes()?.decodeToString()) { "Failed to extract a response body." }
+    }
 }
