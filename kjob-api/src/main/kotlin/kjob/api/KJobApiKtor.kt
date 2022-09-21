@@ -3,7 +3,7 @@ package kjob.api
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kjob.core.KJob

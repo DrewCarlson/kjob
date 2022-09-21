@@ -188,6 +188,7 @@ public final class kjob/core/dsl/ScheduleContext {
 public final class kjob/core/dsl/ScheduleContext$Props {
 	public fun <init> (Lkjob/core/dsl/ScheduleContext;)V
 	public final fun setProp (Ljava/lang/String;Ljava/lang/Object;Lkotlinx/serialization/KSerializer;)V
+	public static synthetic fun setProp$default (Lkjob/core/dsl/ScheduleContext$Props;Ljava/lang/String;Ljava/lang/Object;Lkotlinx/serialization/KSerializer;ILjava/lang/Object;)V
 }
 
 public abstract class kjob/core/extension/BaseExtension : kjob/core/extension/Extension {
@@ -311,6 +312,7 @@ public final class kjob/core/job/JobProgress {
 public final class kjob/core/job/JobProps {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData (Ljava/lang/String;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	public static synthetic fun getData$default (Lkjob/core/job/JobProps;Ljava/lang/String;Lkotlinx/serialization/KSerializer;ILjava/lang/Object;)Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

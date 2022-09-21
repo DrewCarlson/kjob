@@ -11,6 +11,7 @@ import kjob.jdbi.JdbiKJob
 import kjob.kron.Kron
 import kjob.kron.KronModule
 import kotlinx.coroutines.delay
+import kotlinx.serialization.Serializable
 import org.jdbi.v3.core.Jdbi
 import java.time.Duration
 import java.time.Instant
@@ -19,7 +20,14 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 
+@Serializable
+data class TestData(
+    val number: Int,
+    val text: String,
+)
+
 object LogNumber : Job("log-number") {
+    val testData = serializable("test", TestData::class)
     val number = integer("number")
 }
 

@@ -2,15 +2,16 @@ package io.kotest.provided
 
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients
-import de.flapdoodle.embed.mongo.Command
 import de.flapdoodle.embed.mongo.MongodStarter
 import de.flapdoodle.embed.mongo.config.Defaults
 import de.flapdoodle.embed.mongo.config.MongodConfig
 import de.flapdoodle.embed.mongo.config.Net
 import de.flapdoodle.embed.mongo.distribution.Version
+import de.flapdoodle.embed.mongo.packageresolver.Command
 import de.flapdoodle.embed.process.runtime.Network
 import io.kotest.core.config.AbstractProjectConfig
 import org.slf4j.LoggerFactory
+import java.net.InetAddress
 
 // Code is executed before and after test engine is started.
 // see https://github.com/kotest/kotest/blob/master/doc/reference.md#project-config
@@ -19,7 +20,7 @@ object ProjectConfig : AbstractProjectConfig() {
 
     private val mongo = lazy {
         val host = "localhost"
-        val port = Network.getFreeServerPort()
+        val port = Network.freeServerPort(InetAddress.getLocalHost())
 
         val logger = LoggerFactory.getLogger(javaClass.name)
 
@@ -41,8 +42,8 @@ object ProjectConfig : AbstractProjectConfig() {
         return MongoClients.create("mongodb://$host:$port/?uuidRepresentation=STANDARD")
     }
 
-    override fun afterAll() {
-        super.afterAll()
+    override suspend fun afterProject() {
+        super.afterProject()
         if (mongo.isInitialized()) {
             mongo.value.first.stop()
             mongo.value.second.stop()

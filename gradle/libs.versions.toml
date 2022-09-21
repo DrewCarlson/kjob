@@ -1,25 +1,25 @@
 [versions]
-kotlin = "1.6.10"
-coroutines = "1.6.0"
-serialization = "1.3.2"
-kover = "0.5.0"
-datetime = "0.3.2"
-dokka = "1.6.10"
-binary_compat = "0.8.0"
+kotlin = "1.7.10"
+coroutines = "1.6.3"
+serialization = "1.4.0"
+kover = "0.6.0"
+datetime = "0.4.0"
+dokka = "1.7.10"
+binary_compat = "0.11.1"
 
-jdbi = "3.28.0"
-jdbc_sqlite = "3.36.0.3"
+jdbi = "3.32.0"
+jdbc_sqlite = "3.39.3.0"
 
-logback = "1.2.11"
-spotless = "6.3.0"
-ktlint = "0.43.2"
+logback = "1.4.1"
+spotless = "6.11.0"
+ktlint = "0.47.1"
 
 testLogger = "3.2.0"
-mockk = "1.12.3"
-kotest = "5.2.1"
-cronutils = "9.1.6"
+mockk = "1.12.8"
+kotest = "5.4.2"
+cronutils = "9.2.0"
 
-ktorio = "2.0.0-beta-1"
+ktorio = "2.1.1"
 
 [plugins]
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
