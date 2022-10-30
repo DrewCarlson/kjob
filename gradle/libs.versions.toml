@@ -4,7 +4,7 @@ coroutines = "1.6.4"
 serialization = "1.4.0"
 kover = "0.6.0"
 datetime = "0.4.0"
-dokka = "1.7.10"
+dokka = "1.7.20"
 binary_compat = "0.11.1"
 
 jdbi = "3.32.0"
