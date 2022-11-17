@@ -7,7 +7,7 @@ datetime = "0.4.0"
 dokka = "1.7.10"
 binary_compat = "0.11.1"
 
-jdbi = "3.32.0"
+jdbi = "3.34.0"
 jdbc_sqlite = "3.39.3.0"
 
 logback = "1.4.1"
