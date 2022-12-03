@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
-abstract class SimplePeriodScheduler(private val executorService: ScheduledExecutorService, private val periodInMilliSeconds: Long) {
+abstract class SimplePeriodScheduler(
+    private val executorService: ScheduledExecutorService,
+    private val periodInMilliSeconds: Long
+) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     protected fun run(block: suspend () -> Unit) = run(block, 0)
@@ -29,6 +32,6 @@ abstract class SimplePeriodScheduler(private val executorService: ScheduledExecu
 
     open fun shutdown() {
         logger.debug("Shutting down ${javaClass.simpleName}")
-        executorService.shutdown()
+        executorService.shutdownNow()
     }
 }
