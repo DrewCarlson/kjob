@@ -19,7 +19,7 @@ mockk = "1.13.3"
 kotest = "5.5.4"
 cronutils = "9.2.0"
 
-ktorio = "2.1.3"
+ktorio = "2.2.1"
 
 [plugins]
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
