@@ -2,15 +2,13 @@ package io.kotest.provided
 
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients
-import de.flapdoodle.embed.mongo.MongodStarter
-import de.flapdoodle.embed.mongo.config.Defaults
-import de.flapdoodle.embed.mongo.config.MongodConfig
 import de.flapdoodle.embed.mongo.config.Net
 import de.flapdoodle.embed.mongo.distribution.Version
-import de.flapdoodle.embed.mongo.packageresolver.Command
+import de.flapdoodle.embed.mongo.transitions.Mongod
+import de.flapdoodle.embed.mongo.transitions.RunningMongodProcess
 import de.flapdoodle.embed.process.runtime.Network
+import de.flapdoodle.reverse.transitions.Start
 import io.kotest.core.config.AbstractProjectConfig
-import org.slf4j.LoggerFactory
 import java.net.InetAddress
 
 // Code is executed before and after test engine is started.
@@ -18,37 +16,27 @@ import java.net.InetAddress
 
 object ProjectConfig : AbstractProjectConfig() {
 
-    private val mongo = lazy {
-        val host = "localhost"
-        val port = Network.freeServerPort(InetAddress.getLocalHost())
-
-        val logger = LoggerFactory.getLogger(javaClass.name)
-
-        val runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, logger).build()
-
-        val starter = MongodStarter.getInstance(runtimeConfig)
-        val exe = starter.prepare(
-            MongodConfig.builder()
-                .version(Version.Main.PRODUCTION)
-                .net(Net(host, port, Network.localhostIsIPv6()))
-                .build()
-        )
-
-        val mongod = exe.start()
-        exe to mongod
+    private const val host = "localhost"
+    private val port = Network.freeServerPort(InetAddress.getLocalHost())
+    private val mongod: Triple<RunningMongodProcess, String, Int> by lazy {
+        val process = Mongod.instance()
+            .withNet(
+                Start.to(Net::class.java)
+                    .initializedWith(Net.of(host, port, Network.localhostIsIPv6()))
+            )
+            .start(Version.Main.V4_4)
+            .current()
+        Triple(process, host, port)
     }
 
     fun newMongoClient(): MongoClient {
-        val host = mongo.value.second.config.net().bindIp
-        val port = mongo.value.second.config.net().port
+        val (_, host, port) = mongod
         return MongoClients.create("mongodb://$host:$port/?uuidRepresentation=STANDARD")
     }
 
     override suspend fun afterProject() {
         super.afterProject()
-        if (mongo.isInitialized()) {
-            mongo.value.first.stop()
-            mongo.value.second.stop()
-        }
+        val (exe) = mongod
+        exe.stop()
     }
 }
