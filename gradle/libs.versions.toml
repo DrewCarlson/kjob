@@ -52,7 +52,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 cronutils = { module = "com.cronutils:cron-utils", version.ref = "cronutils" }
-embedMongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo", version = "4.3.1" }
+embedMongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo", version = "4.3.3" }
 mongodbReactive = { module = "org.mongodb:mongodb-driver-reactivestreams", version = "4.8.1" }
 rxjava = { module = "io.reactivex.rxjava2:rxkotlin", version = "2.4.0" }
 
