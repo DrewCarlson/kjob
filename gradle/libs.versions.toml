@@ -8,7 +8,7 @@ dokka = "1.7.20"
 binary_compat = "0.12.1"
 
 jdbi = "3.37.0"
-jdbc_sqlite = "3.40.0.0"
+jdbc_sqlite = "3.40.1.0"
 
 logback = "1.4.5"
 spotless = "6.14.0"
