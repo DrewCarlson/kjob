@@ -11,7 +11,7 @@ jdbi = "3.37.0"
 jdbc_sqlite = "3.40.1.0"
 
 logback = "1.4.5"
-spotless = "6.14.0"
+spotless = "6.14.1"
 ktlint = "0.47.1"
 
 testLogger = "3.2.0"
