@@ -5,7 +5,7 @@ serialization = "1.4.1"
 kover = "0.6.1"
 datetime = "0.4.0"
 dokka = "1.7.20"
-binary_compat = "0.12.1"
+binary_compat = "0.13.0"
 
 jdbi = "3.37.1"
 jdbc_sqlite = "3.40.1.0"
