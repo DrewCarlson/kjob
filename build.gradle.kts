@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.binaryCompat) apply false
     alias(libs.plugins.serialization) apply false
+    alias(libs.plugins.mavenPublish)
 }
 
 allprojects {
@@ -14,6 +15,8 @@ allprojects {
         mavenCentral()
     }
 }
+
+version = System.getenv("GITHUB_REF")?.substringAfter("refs/tags/v", version.toString()) ?: version
 
 subprojects {
     apply(plugin = "kotlin")
@@ -100,8 +103,9 @@ project(":kjob-example") {
 }
 
 project(":kjob-mongo") {
-    apply(from = "../gradle/publishing.gradle.kts")
     apply(plugin = "binary-compatibility-validator")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "com.vanniktech.maven.publish")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.mongodbReactive)
@@ -119,8 +123,9 @@ project(":kjob-mongo") {
 }
 
 project(":kjob-jdbi") {
-    apply(from = "../gradle/publishing.gradle.kts")
     apply(plugin = "binary-compatibility-validator")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "com.vanniktech.maven.publish")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.serialization.core)
@@ -139,8 +144,9 @@ project(":kjob-jdbi") {
 }
 
 project(":kjob-inmem") {
-    apply(from = "../gradle/publishing.gradle.kts")
     apply(plugin = "binary-compatibility-validator")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "com.vanniktech.maven.publish")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.coroutines.core)
@@ -155,8 +161,9 @@ project(":kjob-inmem") {
 }
 
 project(":kjob-kron") {
-    apply(from = "../gradle/publishing.gradle.kts")
     apply(plugin = "binary-compatibility-validator")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "com.vanniktech.maven.publish")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(rootProject.libs.coroutines.core)
@@ -176,8 +183,9 @@ project(":kjob-kron") {
 }
 
 project(":kjob-api") {
-    apply(from = "../gradle/publishing.gradle.kts")
     apply(plugin = "binary-compatibility-validator")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "com.vanniktech.maven.publish")
     dependencies {
         implementation(project(":kjob-core"))
         implementation(project(":kjob-mongo"))
@@ -208,8 +216,9 @@ project(":kjob-api") {
 
 project(":kjob-core") {
     apply(plugin = "kotlinx-serialization")
-    apply(from = "../gradle/publishing.gradle.kts")
     apply(plugin = "binary-compatibility-validator")
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "com.vanniktech.maven.publish")
     dependencies {
         implementation(rootProject.libs.coroutines.core)
         implementation(rootProject.libs.serialization.core)

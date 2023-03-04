@@ -29,6 +29,7 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.24.0" }
 
 [libraries]
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }

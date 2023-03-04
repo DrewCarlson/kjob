@@ -9,5 +9,4 @@ include(
     "kjob-jdbi",
 )
 
-enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
