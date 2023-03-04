@@ -27,7 +27,8 @@ subprojects {
     kotlin {
         target {
             compilations.all {
-                kotlinOptions.jvmTarget = "11"
+                check(JavaVersion.current().isJava11Compatible) { "Kjob requires JDK 11+" }
+                kotlinOptions.jvmTarget = JavaVersion.current().majorVersion
             }
         }
     }
