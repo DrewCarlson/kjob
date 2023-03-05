@@ -12,6 +12,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import org.jdbi.v3.core.Handle
+import org.jdbi.v3.core.JdbiException
 import org.jdbi.v3.core.result.RowView
 import org.jdbi.v3.core.statement.Update
 import java.sql.Types
@@ -26,30 +27,38 @@ internal class JdbiJobRepository(
 ) : JobRepository {
 
     constructor(handle: Handle, clock: Clock, conf: JdbiKJob.Configuration.() -> Unit) :
-        this({ handle }, JdbiKJob.Configuration().apply(conf), clock)
+            this({ handle }, JdbiKJob.Configuration().apply(conf), clock)
 
     private val jobTable = config.jobTableName
+    private var supportsSerialId = false
 
     fun createTable() {
         val handle = handleProvider()
+        supportsSerialId = try {
+            handle.execute("SELECT version();")
+            true
+        } catch (e: JdbiException) {
+            false
+        }
+        val idType = if (supportsSerialId) "SERIAL" else "INTEGER PRIMARY KEY"
         val result = handle.execute(
             """
             CREATE TABLE IF NOT EXISTS $jobTable (
-                id            INTEGER PRIMARY KEY NOT NULL,
+                id            $idType,
                 status        TEXT NOT NULL,
-                runAt         INTEGER,
+                runAt         BIGINT,
                 statusMessage TEXT,
                 retries       INTEGER NOT NULL,
                 kjobId        CHAR(36),
-                createdAt     INTEGER NOT NULL,
-                updatedAt     INTEGER NOT NULL,
+                createdAt     BIGINT NOT NULL,
+                updatedAt     BIGINT NOT NULL,
                 jobId         TEXT NOT NULL,
                 name          TEXT,
                 properties    TEXT,
                 step          INTEGER NOT NULL,
                 max           INTEGER,
-                startedAt     INTEGER,
-                completedAt   INTEGER
+                startedAt     BIGINT,
+                completedAt   BIGINT
             );
             """.trimIndent()
         )
@@ -70,24 +79,19 @@ internal class JdbiJobRepository(
         val handle = handleProvider()
         val now = Instant.now(clock)
         val sj = ScheduledJob("", JobStatus.CREATED, runAt, null, 0, null, now, now, jobSettings, JobProgress(0))
+        val (idRow, idValue) = if (supportsSerialId) "" to "" else "id, " to "NULL, "
         val id = handle.createUpdate(
             """
-                INSERT INTO $jobTable (id, status, runAt, statusMessage, retries, kjobId, createdAt, updatedAt, jobId, name, properties, step, max, startedAt, completedAt)
-                VALUES (NULL, :status, :runAt, NULL, 0, NULL, :createdAt, :updatedAt, :jobId, :name, :properties, 0, NULL, NULL, NULL)
+                INSERT INTO $jobTable ($idRow status, runAt, statusMessage, retries, kjobId, createdAt, updatedAt, jobId, name, properties, step, max, startedAt, completedAt)
+                VALUES ($idValue :status, :runAt, NULL, 0, NULL, :createdAt, :updatedAt, :jobId, :name, :properties, 0, NULL, NULL, NULL)
             """.trimIndent()
         ).bind("status", sj.status.name)
             .bind("createdAt", sj.createdAt.toEpochMilli())
             .bind("updatedAt", sj.updatedAt.toEpochMilli())
             .bind("jobId", sj.settings.id)
             .bind("name", sj.settings.name)
-            .run {
-                if (sj.settings.properties.isEmpty()) {
-                    bindNull("properties", Types.NULL)
-                } else {
-                    bind("properties", sj.settings.properties.stringify())
-                }
-            }
-            .bind("runAt", sj.runAt?.toEpochMilli())
+            .bindOrNull("properties", sj.settings.properties.stringify())
+            .bindOrNull("runAt", sj.runAt?.toEpochMilli())
             .executeAndReturnGeneratedKeys("id")
             .mapTo(Long::class.java)
             .one()
@@ -97,7 +101,7 @@ internal class JdbiJobRepository(
     override suspend fun get(id: String): ScheduledJob? {
         val handle = handleProvider()
         return handle.createQuery("SELECT * FROM $jobTable WHERE id = :id")
-            .bind("id", id)
+            .bind("id", id.toLong())
             .map { row -> row.toScheduledJob() }
             .singleOrNull()
     }
@@ -125,7 +129,7 @@ internal class JdbiJobRepository(
         ).bind("status", status.name)
             .bind("retries", retries)
             .bind("updatedAt", Instant.now(clock).toEpochMilli())
-            .bind("id", id)
+            .bind("id", id.toLong())
             .bindOrNull("statusMessage", statusMessage)
             .bindOrNull("newKjobId", kjobId?.toString())
             .apply {
@@ -154,7 +158,7 @@ internal class JdbiJobRepository(
             """.trimIndent()
         ).bind("status", JobStatus.CREATED.name)
             .bind("updatedAt", Instant.now(clock).toEpochMilli())
-            .bind("id", id)
+            .bind("id", id.toLong())
             .run {
                 if (oldKjobId != null) {
                     bind("oldKjobId", oldKjobId.toString())
@@ -171,7 +175,7 @@ internal class JdbiJobRepository(
         return handle.createUpdate("UPDATE $jobTable SET startedAt = :startedAt, updatedAt = :updatedAt WHERE id = :id")
             .bind("startedAt", now)
             .bind("updatedAt", now)
-            .bind("id", id)
+            .bind("id", id.toLong())
             .execute() == 1
     }
 
@@ -181,17 +185,24 @@ internal class JdbiJobRepository(
         return handle.createUpdate("UPDATE $jobTable SET completedAt = :completedAt, updatedAt = :updatedAt WHERE id = :id")
             .bind("completedAt", now)
             .bind("updatedAt", now)
-            .bind("id", id)
+            .bind("id", id.toLong())
             .execute() == 1
     }
 
     override suspend fun stepProgress(id: String, step: Long): Boolean {
         val handle = handleProvider()
         val now = Instant.now(clock).toEpochMilli()
-        return handle.createUpdate("UPDATE $jobTable SET step = ifnull(step, 0) + :step, updatedAt = :updatedAt WHERE id = :id")
+        return handle.createUpdate(
+            """
+            UPDATE $jobTable SET 
+              step = COALESCE(step, 0) + :step, 
+              updatedAt = :updatedAt 
+            WHERE id = :id;
+        """.trimIndent()
+        )
             .bind("step", step)
             .bind("updatedAt", now)
-            .bind("id", id)
+            .bind("id", id.toLong())
             .execute() == 1
     }
 
@@ -201,7 +212,7 @@ internal class JdbiJobRepository(
         return handle.createUpdate("UPDATE $jobTable SET max = :max, updatedAt = :updatedAt WHERE id = :id")
             .bind("max", max)
             .bind("updatedAt", now)
-            .bind("id", id)
+            .bind("id", id.toLong())
             .execute() == 1
     }
 
@@ -227,6 +238,11 @@ internal class JdbiJobRepository(
     internal fun deleteAll() {
         val handle = handleProvider()
         handle.execute("DELETE FROM $jobTable")
+    }
+
+    internal fun dropTables() {
+        val handle = handleProvider()
+        runCatching { handle.execute("DROP TABLE ${jobTable};") }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -256,6 +272,7 @@ internal class JdbiJobRepository(
                             }
                         }
                     }
+
                     is Double -> JsonPrimitive("d:$value")
                     is Long -> JsonPrimitive("l:$value")
                     is Int -> JsonPrimitive("i:$value")

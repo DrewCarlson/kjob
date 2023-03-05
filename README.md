@@ -155,7 +155,7 @@ A complete Ktor server example can be found in [Example6.kt](kjob-example/src/ma
 Using [JDBI](https://jdbi.org/), KJob can persist jobs in SQL databases.
 You only need to include the JDBC driver dependency and provide a connection string.
 
-Drivers: [SQLite](https://github.com/xerial/sqlite-jdbc), [MySQL](https://github.com/mysql/mysql-connector-j), [PostegreSQL](https://github.com/pgjdbc/pgjdbc)
+Drivers: [SQLite](https://github.com/xerial/sqlite-jdbc), [MySQL](https://github.com/mysql/mysql-connector-j), [PostgreSQL](https://github.com/pgjdbc/pgjdbc)
 
 ```kotlin
 import kjob.core.kjob

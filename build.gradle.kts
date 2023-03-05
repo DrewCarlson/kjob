@@ -135,6 +135,8 @@ project(":kjob-jdbi") {
         implementation(rootProject.libs.jdbi.core)
 
         testImplementation(rootProject.libs.jdbc.sqlite)
+        testImplementation(rootProject.libs.jdbc.postgres)
+        testImplementation(rootProject.libs.jdbc.mysql)
         testImplementation(rootProject.libs.kotest.runner)
         testImplementation(rootProject.libs.kotest.assertions)
         testImplementation(rootProject.libs.mockk)

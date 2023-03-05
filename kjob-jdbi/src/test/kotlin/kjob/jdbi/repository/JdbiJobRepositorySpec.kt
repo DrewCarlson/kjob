@@ -5,15 +5,33 @@ import io.kotest.matchers.shouldNotBe
 import kjob.core.job.JobSettings
 import kjob.core.repository.JobRepository
 import kjob.core.repository.JobRepositoryContract
+import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.statement.Slf4JSqlLogger
 
-class JdbiJobRepositorySpec : JobRepositoryContract() {
-    private val handle = Jdbi.create("jdbc:sqlite::memory:").apply {
+class JdbiPostgresJobRepositorySpec : JdbiJobRepositorySpec(
+    handle = Jdbi.create("jdbc:postgresql:?user=postgres&password=password").apply {
         setSqlLogger(Slf4JSqlLogger())
     }.open()
+)
 
-    override val testee: JobRepository = JdbiJobRepository(handle, clock) {
+class JdbiMysqlJobRepositorySpec : JdbiJobRepositorySpec(
+    handle = Jdbi.create("jdbc:mysql://root:password@localhost/test").apply {
+        setSqlLogger(Slf4JSqlLogger())
+    }.open()
+)
+
+class JdbiSqliteJobRepositorySpec : JdbiJobRepositorySpec(
+    handle = Jdbi.create("jdbc:sqlite::memory:").apply {
+        setSqlLogger(Slf4JSqlLogger())
+    }.open()
+)
+
+abstract class JdbiJobRepositorySpec(
+    private val handle: Handle
+) : JobRepositoryContract() {
+
+    final override val testee: JobRepository = JdbiJobRepository(handle, clock) {
         handle = this@JdbiJobRepositorySpec.handle
     }
 
@@ -30,6 +48,7 @@ class JdbiJobRepositorySpec : JobRepositoryContract() {
             jdbiTestee.createTable()
         }
         afterSpec {
+            jdbiTestee.dropTables()
             handle.close()
         }
         should("serialize and deserialize props") {
