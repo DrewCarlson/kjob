@@ -1,10 +1,10 @@
 name: Publish
 
 on:
-  create:
-    branches: [ main ]
   push:
     branches: [ main ]
+    tags:
+      - 'v*'
 
 env:
   ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKey }}
