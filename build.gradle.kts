@@ -24,6 +24,14 @@ subprojects {
     apply(plugin = "com.diffplug.spotless")
     apply(plugin = "org.jetbrains.kotlinx.kover")
 
+    java {
+        sourceCompatibility = JavaVersion.current()
+        targetCompatibility = JavaVersion.current()
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(JavaVersion.current().majorVersion))
+        }
+    }
+
     kotlin {
         target {
             compilations.all {
