@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.kover)
     alias(libs.plugins.binaryCompat) apply false
     alias(libs.plugins.serialization) apply false
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.mavenPublish) apply false
 }
 
 allprojects {
