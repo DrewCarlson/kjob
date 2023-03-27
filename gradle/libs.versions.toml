@@ -19,7 +19,7 @@ ktlint = "0.47.1"
 testLogger = "3.2.0"
 mockk = "1.13.4"
 kotest = "5.5.5"
-cronutils = "9.2.0"
+cronutils = "9.2.1"
 
 ktorio = "2.2.4"
 
