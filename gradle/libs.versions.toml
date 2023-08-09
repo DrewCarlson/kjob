@@ -12,7 +12,7 @@ jdbc_sqlite = "3.41.2.1"
 jdbc_postgres = "42.6.0"
 jdbc_mysql = "8.0.33"
 
-logback = "1.4.6"
+logback = "1.4.11"
 spotless = "6.16.0"
 ktlint = "0.47.1"
 
