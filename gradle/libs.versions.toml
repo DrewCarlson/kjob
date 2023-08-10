@@ -8,7 +8,7 @@ dokka = "1.8.20"
 binary_compat = "0.13.0"
 
 jdbi = "3.38.2"
-jdbc_sqlite = "3.41.2.1"
+jdbc_sqlite = "3.42.0.0"
 jdbc_postgres = "42.6.0"
 jdbc_mysql = "8.0.33"
 
