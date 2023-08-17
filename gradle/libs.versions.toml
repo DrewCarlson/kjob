@@ -10,7 +10,7 @@ binary_compat = "0.13.0"
 jdbi = "3.41.0"
 jdbc_sqlite = "3.42.0.0"
 jdbc_postgres = "42.6.0"
-jdbc_mysql = "8.0.33"
+jdbc_mysql = "8.1.0"
 
 logback = "1.4.11"
 spotless = "6.16.0"
