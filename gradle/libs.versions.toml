@@ -3,7 +3,7 @@ kotlin = "1.8.21"
 coroutines = "1.7.3"
 serialization = "1.6.0"
 kover = "0.6.1"
-datetime = "0.4.0"
+datetime = "0.4.1"
 dokka = "1.8.20"
 binary_compat = "0.13.2"
 
