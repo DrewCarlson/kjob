@@ -7,7 +7,7 @@ datetime = "0.4.1"
 dokka = "1.8.20"
 binary_compat = "0.13.2"
 
-jdbi = "3.41.0"
+jdbi = "3.41.3"
 jdbc_sqlite = "3.42.0.0"
 jdbc_postgres = "42.6.0"
 jdbc_mysql = "8.1.0"
