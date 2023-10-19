@@ -76,7 +76,14 @@ subprojects {
     }
 }
 
-koverMerged { enable() }
+dependencies {
+    kover(project(":kjob-api"))
+    kover(project(":kjob-core"))
+    kover(project(":kjob-inmem"))
+    kover(project(":kjob-jdbi"))
+    kover(project(":kjob-kron"))
+    kover(project(":kjob-mongo"))
+}
 
 project(":kjob-example") {
     apply(plugin = "kotlinx-serialization")

@@ -51,14 +51,14 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build koverMergedXmlReport
+          arguments: build koverXmlReport
 
       - name: Archive Reports
         uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: reports
-          path: '**/build/reports/*'
+          path: "build/reports/kover/report.xml"
 
       - name: Publish Unit Test Results
         uses: mikepenz/action-junit-report@v4
@@ -68,4 +68,4 @@ jobs:
 
       - uses: codecov/codecov-action@v3
         with:
-          files: "build/reports/kover/merged/xml/report.xml"
+          files: "report.xml"

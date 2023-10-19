@@ -287,6 +287,7 @@ public abstract class kjob/core/internal/scheduler/SimplePeriodScheduler {
 public final class kjob/core/job/JobExecutionType : java/lang/Enum {
 	public static final field BLOCKING Lkjob/core/job/JobExecutionType;
 	public static final field NON_BLOCKING Lkjob/core/job/JobExecutionType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lkjob/core/job/JobExecutionType;
 	public static fun values ()[Lkjob/core/job/JobExecutionType;
 }
@@ -339,6 +340,7 @@ public final class kjob/core/job/JobStatus : java/lang/Enum {
 	public static final field FAILED Lkjob/core/job/JobStatus;
 	public static final field RUNNING Lkjob/core/job/JobStatus;
 	public static final field SCHEDULED Lkjob/core/job/JobStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lkjob/core/job/JobStatus;
 	public static fun values ()[Lkjob/core/job/JobStatus;
 }

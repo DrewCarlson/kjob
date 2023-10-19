@@ -1,14 +1,14 @@
 [versions]
-kotlin = "1.8.21"
+kotlin = "1.9.10"
 coroutines = "1.7.3"
 serialization = "1.6.0"
-kover = "0.6.1"
+kover = "0.7.4"
 datetime = "0.4.1"
 dokka = "1.9.10"
 binary_compat = "0.13.2"
 
-jdbi = "3.41.0"
-jdbc_sqlite = "3.42.0.0"
+jdbi = "3.41.3"
+jdbc_sqlite = "3.43.2.1"
 jdbc_postgres = "42.6.0"
 jdbc_mysql = "8.1.0"
 
@@ -16,7 +16,7 @@ logback = "1.4.11"
 spotless = "6.16.0"
 ktlint = "0.47.1"
 
-testLogger = "3.2.0"
+testLogger = "4.0.0"
 mockk = "1.13.8"
 kotest = "5.7.2"
 cronutils = "9.2.1"
@@ -58,7 +58,7 @@ kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kote
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 cronutils = { module = "com.cronutils:cron-utils", version.ref = "cronutils" }
 embedMongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo", version = "4.9.2" }
-mongodbReactive = { module = "org.mongodb:mongodb-driver-reactivestreams", version = "4.10.2" }
+mongodbReactive = { module = "org.mongodb:mongodb-driver-reactivestreams", version = "4.11.0" }
 rxjava = { module = "io.reactivex.rxjava2:rxkotlin", version = "2.4.0" }
 
 ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorio" }
