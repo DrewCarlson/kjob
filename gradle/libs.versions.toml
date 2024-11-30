@@ -13,7 +13,7 @@ jdbc_postgres = "42.6.0"
 jdbc_mysql = "8.1.0"
 
 logback = "1.4.11"
-spotless = "6.16.0"
+spotless = "6.25.0"
 ktlint = "0.47.1"
 
 testLogger = "4.0.0"
