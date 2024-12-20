@@ -17,7 +17,7 @@ spotless = "6.16.0"
 ktlint = "0.47.1"
 
 testLogger = "4.0.0"
-mockk = "1.13.11"
+mockk = "1.13.14"
 kotest = "5.9.1"
 cronutils = "9.2.1"
 
